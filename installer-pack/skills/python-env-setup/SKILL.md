@@ -5,8 +5,8 @@ description: 检测 Windows 机器上的 Python 解释器并给出安装或 PATH
 
 # Python 环境检查（Windows 原生）
 
-用于确认目标机器是否有可调用的 Python。检测阶段不要求某个固定小版本；只要是受支持的 Python 3
-即可继续，再由具体技能检查自己的最低版本和第三方包。
+用于确认目标机器是否有可调用的 Windows x64 CPython 3.12。由于离线 wheelhouse 使用 `cp312` ABI，
+Python 3.11、3.13 或非 CPython 解释器都不能复用；不匹配时应安装能力包锁定的私有 3.12.10。
 
 ## 检测
 
@@ -14,7 +14,7 @@ description: 检测 Windows 机器上的 Python 解释器并给出安装或 PATH
 powershell -ExecutionPolicy Bypass -File scripts/check_python_env.ps1 -Json
 ```
 
-脚本按 `python`、`py -3`、`python3` 顺序检查解释器，返回命令、绝对路径和版本。它只调用版本查询，
+脚本按 `python`、`py -3`、`python3` 顺序检查解释器，验证 `cpython-312`、`win_amd64` 和 x64，返回命令、绝对路径、ABI 和版本。它只调用解释器探针，
 不安装软件、不修改 PATH、不读取用户配置。
 
 ## 安装边界

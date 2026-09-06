@@ -60,32 +60,32 @@
     },
     {
       "path": "config-fragments/feishu-official-stdio.template.toml",
-      "sha256": "df69f244b40b2b0e3686775c710860898053639e604b57af3e1c9968eebca5c1",
-      "bytes": 346,
+      "sha256": "10fbe499ee57d1ff93f908f4ef7cb6670fc1e7ce4f8c13a7262c17e50e0029da",
+      "bytes": 511,
       "owned": true
     },
     {
       "path": "config-fragments/README.md",
-      "sha256": "5a2cbae3b4fdcac2ef92ee58ecea08d1ea99259e6e12df071b36699ecfff5646",
-      "bytes": 675,
+      "sha256": "9ecb54419eb6cb0fc678d7731249bb50a16cbc779adb6d9dc81c2669da1a3db1",
+      "bytes": 993,
       "owned": true
     },
     {
       "path": "dependencies.json",
-      "sha256": "02918229549f5b79d9ef076ba0d3ebce28566772d6f589cc9d3f4105f5acfdc8",
-      "bytes": 79128,
+      "sha256": "8e1ea6496d95ddd7711cf226b748934eb7c7051371942babc41abdd7cd319cc4",
+      "bytes": 90387,
       "owned": true
     },
     {
       "path": "ENVIRONMENT-MCP-INVENTORY.md",
-      "sha256": "0206b6af46b64008bfc4d6c8dca15730f87d2e7bf9b169417a57c30d90fb723f",
-      "bytes": 4640,
+      "sha256": "21f2a2fb69d7fed35bc00a596d0690d940623fe861a4a51cdc4309a0fd5557cf",
+      "bytes": 5072,
       "owned": true
     },
     {
       "path": "manifest/agent-audit.json",
-      "sha256": "282f171e60e9c22c4a73f740ed093ec6c34f1b9649e88690d4ba3608447b7ea4",
-      "bytes": 7240,
+      "sha256": "3f0075bb4d427ad89cd0c67376af4b5c8010e191f3fff54c3409436ce05de3dd",
+      "bytes": 7371,
       "owned": true
     },
     {
@@ -102,20 +102,20 @@
     },
     {
       "path": "manifest/api-services.json",
-      "sha256": "d58952a101d4168b7917f74f749cd6308cc0c57191745637579732d0df81a29d",
-      "bytes": 2480,
+      "sha256": "2d51a6a0413a8b79a8ad3ed7e5319c43dfaae6eac96490ede1a55b2c987cf235",
+      "bytes": 2550,
       "owned": true
     },
     {
       "path": "manifest/connection-fields.json",
-      "sha256": "b65a5817173db4da0b0a540da19ba79c604c6f83a02f206148355084818ef9a6",
-      "bytes": 3099,
+      "sha256": "186d76b9509d9cf680c94f1c75c3620b0bf275416ecae46159fda002b439f3a5",
+      "bytes": 3690,
       "owned": true
     },
     {
       "path": "manifest/feishu-mcp-research.md",
-      "sha256": "03e7253c0b91fbb6242c9ebbab3370933c7a5f8208e257f7af00b412547bd964",
-      "bytes": 2800,
+      "sha256": "05c3a0d3b7a9838e7ed555d4bbaf393214f137b870d20a082d2080ca2f316437",
+      "bytes": 3174,
       "owned": true
     },
     {
@@ -126,38 +126,38 @@
     },
     {
       "path": "manifest/mcp-servers.json",
-      "sha256": "5407023fb516e4b5df4af4e45191eda15420179359007813703af683bee3b21f",
-      "bytes": 1549,
+      "sha256": "d51dee723b6cd3b00e6839e8ce10a4e8196d50d448919e871c7029461a775208",
+      "bytes": 2481,
       "owned": true
     },
     {
       "path": "manifest/runtime-artifacts.json",
-      "sha256": "16b11466d004b5c3938f1fed936888b466d1e010c46bcb8b91869d1289f4db19",
-      "bytes": 6967,
+      "sha256": "d6b9f38fa1148a2157489e45bf74af6aa49c61372a8ab0653c24b244363a5de1",
+      "bytes": 9077,
       "owned": true
     },
     {
       "path": "manifest/skill-audit.json",
-      "sha256": "6f733d517177b6386f0c827dd7cb7ab601f337dd4d3397bbdf08a209b56048ca",
-      "bytes": 64101,
+      "sha256": "2104cb39203b4639e834e775c84463bf2de8f9d2572f783f5f44c5a7c686c534",
+      "bytes": 66364,
       "owned": true
     },
     {
       "path": "manifest/source-notes.md",
-      "sha256": "ce0620e775573ee5eced6e820a16bd79a438186ef3618192c6bdab8ce6043a58",
-      "bytes": 1385,
+      "sha256": "303f5c8ed3c1e1349756862b56e2711da886634fc14b66b0770238c738cc695d",
+      "bytes": 1412,
       "owned": true
     },
     {
       "path": "mcp/api-services.json",
-      "sha256": "2b6facfc33ef687af213c3095a652acd05af6d69b8134f4f2d897ed76fbf12e1",
-      "bytes": 2672,
+      "sha256": "44349e31f27fe4afa5f223c740280b2a19302dfaf8887313b8666c161c5da32a",
+      "bytes": 2774,
       "owned": true
     },
     {
       "path": "mcp/connection-fields.json",
-      "sha256": "824e2a64c1e32a27f12ed5db1b4bae322a08205b1e22eb79b744dfeec2be04df",
-      "bytes": 4372,
+      "sha256": "43b1e814d9db0b8e5e851b360a67c89e6af66469a894742df8b31eed07c43201",
+      "bytes": 5199,
       "owned": true
     },
     {
@@ -168,14 +168,14 @@
     },
     {
       "path": "mcp/image-2.template.env",
-      "sha256": "ace3331d4c2ff951f8f606e0e3d667141c94cf0fbf5f5e1eb4b0861cfde3dd11",
-      "bytes": 113,
+      "sha256": "8802adcd9102ba1d7bf6ee015d68d8a20d7f38a11ab90409fef523ab87ab855e",
+      "bytes": 128,
       "owned": true
     },
     {
       "path": "mcp/mcp-servers.json",
-      "sha256": "5796c5ab7c3a9a86d9eb4f64b3d4d525fa099ff60c6eb57cf48dbb50a2320940",
-      "bytes": 1733,
+      "sha256": "228b5affced2400399653af31d24b59b05e65d7b6ee30941d2c4c35876d71dd6",
+      "bytes": 2721,
       "owned": true
     },
     {
@@ -186,32 +186,50 @@
     },
     {
       "path": "mcp/seedance.template.env",
-      "sha256": "ce795677c0cd7c60e960115c241d09043bb0e43f8d3f028c912c7aca123148a4",
-      "bytes": 115,
+      "sha256": "768405651f4a5c5ee478a9bbb14ccbde3537b2b14071212e30e04a1169410e62",
+      "bytes": 131,
       "owned": true
     },
     {
       "path": "pack.json",
-      "sha256": "d4de6e1c8dccb903f0a3fc0353155ed8ce29122e8378d2396093f16c2bfd83b0",
-      "bytes": 3002,
+      "sha256": "94e8e201c319f0b0817194c8f88ad1db1307a6dd558fcc980513b08243ba656e",
+      "bytes": 3118,
       "owned": true
     },
     {
       "path": "README.md",
-      "sha256": "e6e7b55ae6043531980ddc54ea0bb5bdf110ffb3a79e1b6dab94b54909c8a81b",
-      "bytes": 6083,
+      "sha256": "5e716743db4c3c9011e6a3fc84158d2b9210f0f80db8b8748e84004b5b99094d",
+      "bytes": 6304,
       "owned": true
     },
     {
-      "path": "runtime/requirements-python-win-x64-py312.lock",
-      "sha256": "f59ed5cbeb79ece5f90a78d38de8ef48a606b45e430b93279dd5f5e2f19266a1",
-      "bytes": 369,
+      "path": "runtime/materialize-python-wheelhouse.ps1",
+      "sha256": "ba21cf81890811e3f92569d6d1f6dadd8ca1e9f1a6631d33f58853497f60821a",
+      "bytes": 1485,
+      "owned": true
+    },
+    {
+      "path": "runtime/materialize-python-wheelhouse.py",
+      "sha256": "931955ff8acd00734e8008b1c4c3cddf3560e80bff68c045bf3cda45b841a241",
+      "bytes": 5508,
+      "owned": true
+    },
+    {
+      "path": "runtime/README.md",
+      "sha256": "c887771b6f4603991e156c0dc0d2626ac24d03d6eff38de0563a094b4c753e86",
+      "bytes": 1054,
+      "owned": true
+    },
+    {
+      "path": "runtime/requirements-python-win-x64-py312.in",
+      "sha256": "2cbac566b508094f16a0abedd857329ef25c95e4c82018a86eebca7ead74d2b0",
+      "bytes": 450,
       "owned": true
     },
     {
       "path": "runtime/wheelhouse-manifest.json",
-      "sha256": "417794ece8350d97f8d52f3a42ed0490edd95e425f756e33b6565ffe53836cb3",
-      "bytes": 3153,
+      "sha256": "c84e23990a7755584f499444169d484743134c0fdf1a91857105d76aca21f8ea",
+      "bytes": 4406,
       "owned": true
     },
     {
@@ -534,8 +552,8 @@
     },
     {
       "path": "skills/image-2/scripts/image_2_gen.py",
-      "sha256": "a50f96c3624e27011399e5c598abfe210cc89a128385c25073c8c7a9028c1fc5",
-      "bytes": 29785,
+      "sha256": "7a887caa977f21c2432229a139da5ccbc86cad15bb28f7c54d31cdf2417f784a",
+      "bytes": 29825,
       "owned": true
     },
     {
@@ -738,14 +756,14 @@
     },
     {
       "path": "skills/python-env-setup/scripts/check_python_env.ps1",
-      "sha256": "8dc918cafbbab9204b1ba5f7862565b747922ec6cdef32671e17d2f3df932bed",
-      "bytes": 1588,
+      "sha256": "d9a004995ca89de868c7e415ed9734b19e3894f65d9b4c85828b3cc6bdc99c63",
+      "bytes": 2501,
       "owned": true
     },
     {
       "path": "skills/python-env-setup/SKILL.md",
-      "sha256": "b54137229abb3f743d7f97af10ea5bb75932cfe6eef8ccf77bc383c0d67cb182",
-      "bytes": 1188,
+      "sha256": "938f4edbb7ff5ef4c708fbbd94ae73b8b8d6eccf653caf6850461aac7818ca85",
+      "bytes": 1270,
       "owned": true
     },
     {
@@ -762,8 +780,8 @@
     },
     {
       "path": "skills/seedance2-0-video-gen/scripts/seedance_video_gen.py",
-      "sha256": "d2f098afbed181bd0d108794f8095b3e8472c88866ba5cc6ad732a006a2738a5",
-      "bytes": 151675,
+      "sha256": "3b62a41a3f0683312f123e62a88a65296708629146c64f0e0035465df36f2924",
+      "bytes": 151748,
       "owned": true
     },
     {

@@ -1,11 +1,33 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "materializationStatus": "pending",
+  "materializationRequired": true,
+  "installReady": false,
   "platform": "win_amd64",
-  "python": "cp312",
-  "lockFile": "runtime/requirements-python-win-x64-py312.lock",
-  "materializeCommand": "python -m pip download --only-binary=:all: --platform win_amd64 --python-version 312 --implementation cp --abi cp312 --dest wheelhouse -r runtime/requirements-python-win-x64-py312.lock",
-  "policy": "Do not ship this starter kit with wheel binaries. The installer repository materializes the complete transitive closure, records every file hash, and signs the media manifest.",
-  "directWheels": [
+  "python": "cpython-312",
+  "abi": "cp312",
+  "inputRequirements": "runtime/requirements-python-win-x64-py312.in",
+  "generatedLock": "runtime/materialized/requirements-python-win-x64-py312.lock",
+  "generatedWheelhouse": "runtime/materialized/wheelhouse",
+  "materializeScript": "runtime/materialize-python-wheelhouse.ps1",
+  "materializeCommand": "powershell -ExecutionPolicy Bypass -File runtime/materialize-python-wheelhouse.ps1 -OutputRoot runtime/materialized",
+  "policy": "The public starter kit contains only direct inputs and this pending contract. A release builder must resolve the complete transitive closure, keep only compatible wheels, compute every SHA-256, write a hashed requirements lock, then flip materializationStatus to ready in the private media manifest. Do not mark a pending manifest install-ready.",
+  "directRequirements": [
+    {"package":"akshare","version":"1.18.94"},
+    {"package":"pandas","version":"3.0.5"},
+    {"package":"numpy","version":"2.5.2"},
+    {"package":"matplotlib","version":"3.11.1"},
+    {"package":"openpyxl","version":"3.1.5"},
+    {"package":"python-docx","version":"1.2.0"},
+    {"package":"python-pptx","version":"1.0.2"},
+    {"package":"pypdf","version":"6.17.0"},
+    {"package":"pdfplumber","version":"0.11.10"},
+    {"package":"reportlab","version":"5.0.1"},
+    {"package":"Pillow","version":"12.3.0"},
+    {"package":"scrapling","version":"0.4.15"},
+    {"package":"html2text","version":"2025.4.15"}
+  ],
+  "directWheelReference": [
     {"package":"akshare","version":"1.18.94","filename":"akshare-1.18.94-py3-none-any.whl","sha256":"a66901c646865781da353d294dbab9ac760955e00e5c761ff5028583431c6771","bytes":1260826},
     {"package":"pandas","version":"3.0.5","filename":"pandas-3.0.5-cp312-cp312-win_amd64.whl","sha256":"80a611068e8a3ac23f7398c6c14eb46dc974e5cc9997f653e2dcfd1da74edd41","bytes":9831691},
     {"package":"numpy","version":"2.5.2","filename":"numpy-2.5.2-cp312-cp312-win_amd64.whl","sha256":"28ac63476ec7651484215ee7fa15a1f78b57c14621f01e392afe17b9a1390ce4","bytes":12464674},
@@ -20,5 +42,11 @@
     {"package":"scrapling","version":"0.4.15","filename":"scrapling-0.4.15-py3-none-any.whl","sha256":"ae66bde9f63afb793ad6f93bd76b451e29f1631347465a553c4e7765c0ecc1f2","bytes":180463},
     {"package":"html2text","version":"2025.4.15","filename":"html2text-2025.4.15-py3-none-any.whl","sha256":"00569167ffdab3d7767a4cdf589b7f57e777a5ed28d12907d8c58769ec734acc","bytes":34656}
   ],
-  "transitiveClosure": {"required": true, "mustBeGeneratedByInstaller": true, "verification": "pip --require-hashes plus per-file SHA-256 manifest"}
+  "wheels": [],
+  "transitiveClosure": {
+    "required": true,
+    "complete": false,
+    "mustBeGeneratedByMaterializer": true,
+    "verification": "Every generated wheel must be win_amd64/cp312 or py3-none-any, appear in the generated hashed requirements file, and have a matching SHA-256 and byte count."
+  }
 }

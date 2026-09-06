@@ -44,6 +44,8 @@ if ([string]$pack.version -ne '1.1.0') { throw "Unexpected pack version: $($pack
 if ([string]::IsNullOrWhiteSpace([string]$pack.sourceCommit)) { throw 'Pack source commit is missing.' }
 if ([string]$pack.compatibleCodex.minCodexVersion -ne '0.144.0') { throw 'Minimum Codex version contract changed unexpectedly.' }
 if ([string]$pack.compatibleCodex.testedCodexVersion -ne '0.144.1') { throw 'Tested Codex version contract changed unexpectedly.' }
+if (@($pack.statuses) -join ',' -ne 'auto-installable-runtime,core-ready,guided-config,unsupported') { throw 'Pack statuses must use the post-remediation enum.' }
+if (@($pack.sourceStatuses) -join ',' -ne 'ready,requires-credential,requires-mcp,requires-runtime,unsupported/disabled') { throw 'Pack sourceStatuses must preserve the audit enum separately.' }
 
 $manifestSkills = @(Get-Content -LiteralPath (Join-Path $repoRoot 'manifest\imported-skills.txt') -Encoding UTF8 | Where-Object { $_.Trim() -and -not $_.Trim().StartsWith('#') } | ForEach-Object { $_.Trim() })
 $auditSkills = @($audit.skills | ForEach-Object { [string]$_.id })
@@ -115,7 +117,7 @@ function Scan-TextRoots([string[]]$Roots) {
         $files = if (Test-Path -LiteralPath $absolute -PathType Leaf) { @((Get-Item -LiteralPath $absolute)) } else { @(Get-ChildItem -LiteralPath $absolute -Recurse -File) }
         foreach ($file in $files) {
             if ($file.Name -eq '.DS_Store' -or $file.Name -like '*_tasks.json' -or $file.Name -like '*.json.lock' -or $file.Name -like '*-market.json' -or $file.FullName -match '\\(__pycache__|\.cache|drafts|output|codex-data)(\\|$)') { continue }
-            if ($file.Extension.ToLowerInvariant() -notin @('.md','.py','.js','.ts','.json','.toml','.ps1','.sh','.txt','.yaml','.yml','.lock')) { continue }
+            if ($file.Extension.ToLowerInvariant() -notin @('.md','.py','.js','.ts','.json','.toml','.ps1','.sh','.txt','.yaml','.yml','.lock','.in')) { continue }
             $text = Get-Content -LiteralPath $file.FullName -Encoding UTF8 -Raw
             if ($text -match $forbidden) { throw "Legacy marker found: $($file.FullName)" }
             if ($text -match $secretLike) { throw "Secret-like value found: $($file.FullName)" }
@@ -125,16 +127,25 @@ function Scan-TextRoots([string[]]$Roots) {
 Scan-TextRoots @('README.md', 'ENVIRONMENT-MCP-INVENTORY.md', 'agents', 'manifest', 'scripts', 'skills', 'runtime', 'config-fragments')
 Scan-TextRoots @((Join-Path $repoRoot 'installer-pack'))
 
-if (-not (Test-Path -LiteralPath (Join-Path $repoRoot 'installer-pack\runtime\requirements-python-win-x64-py312.lock') -PathType Leaf)) { throw 'Pack Python lock file missing.' }
+if (-not (Test-Path -LiteralPath (Join-Path $repoRoot 'installer-pack\runtime\requirements-python-win-x64-py312.in') -PathType Leaf)) { throw 'Pack Python direct requirements input missing.' }
 if (-not (Test-Path -LiteralPath (Join-Path $repoRoot 'installer-pack\runtime\wheelhouse-manifest.json') -PathType Leaf)) { throw 'Pack wheelhouse manifest missing.' }
 if (-not (Test-Path -LiteralPath (Join-Path $repoRoot 'installer-pack\manifest\runtime-artifacts.json') -PathType Leaf)) { throw 'Pack runtime artifact manifest missing.' }
+foreach ($runtimeScript in @('materialize-python-wheelhouse.py','materialize-python-wheelhouse.ps1')) {
+    if (-not (Test-Path -LiteralPath (Join-Path $repoRoot ('installer-pack\runtime\' + $runtimeScript)) -PathType Leaf)) { throw "Pack runtime materializer missing: $runtimeScript" }
+}
 foreach ($requiredPackFile in @('mcp\mcp-servers.json','mcp\api-services.json','mcp\connection-fields.json','config-fragments\README.md')) {
     if (-not (Test-Path -LiteralPath (Join-Path $repoRoot ('installer-pack\' + $requiredPackFile)) -PathType Leaf)) { throw "Pack extension file missing: $requiredPackFile" }
 }
-if (@($runtimeArtifacts.artifacts).Count -ne 3) { throw 'Expected Python, wheelhouse and optional Node artifact records.' }
+if (@($runtimeArtifacts.artifacts).Count -ne 4) { throw 'Expected Python, wheelhouse, optional Node and locked MCP package artifact records.' }
+foreach ($artifact in $runtimeArtifacts.artifacts) {
+    if ([string]$artifact.materializationStatus -ne 'pending' -or [bool]$artifact.installReady) { throw "Unmaterialized runtime artifact cannot be install-ready: $($artifact.artifactId)" }
+}
+$wheelManifest = Read-JsonFile (Join-Path $repoRoot 'runtime\wheelhouse-manifest.json')
+if ([string]$wheelManifest.materializationStatus -ne 'pending' -or [bool]$wheelManifest.installReady -or [bool]$wheelManifest.transitiveClosure.complete) { throw 'Public wheelhouse manifest must remain pending until private materialization.' }
+if ([string]$wheelManifest.abi -ne 'cp312' -or [string]$wheelManifest.platform -ne 'win_amd64') { throw 'Wheelhouse ABI/platform contract is not cp312/win_amd64.' }
 if (@($mcpServers.servers).Count -ne 1 -or [string]$mcpServers.servers[0].id -ne 'feishu') { throw 'MCP inventory must contain the guided Feishu server record.' }
 if (@($apiServices.services).Count -ne 3) { throw 'Expected three direct API service records.' }
-if (@($connectionFields.fields).Count -ne 10) { throw 'Expected ten guided connection fields.' }
+if (@($connectionFields.fields).Count -ne 12) { throw 'Expected twelve guided connection fields, including image/video model fields.' }
 
 if ([int]$dependencies.schemaVersion -ne 2) { throw 'Dependency schema must be 2.' }
 $dependencyIds = [System.Collections.Generic.HashSet[string]]::new()
@@ -183,7 +194,7 @@ if (@(Compare-Object ($allPackFiles | Sort-Object) (@($checksumPaths) | Sort-Obj
 
 $python = Get-Command python -ErrorAction SilentlyContinue
 if (-not $python) { throw 'Verification requires Python 3 for syntax checks.' }
-$pyFiles = @(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'skills') -Recurse -Filter '*.py' -File)
+$pyFiles = @(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'skills') -Recurse -Filter '*.py' -File) + @(Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scripts') -Filter '*.py' -File)
 foreach ($pyFile in $pyFiles) {
     & $python.Source -m py_compile $pyFile.FullName
     if ($LASTEXITCODE -ne 0) { throw "Python syntax check failed: $($pyFile.FullName)" }
@@ -209,7 +220,8 @@ try {
     if (-not $ps) { throw 'Windows PowerShell is required for the PowerShell smoke tests.' }
     & $ps.Source -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'skills\python-env-setup\scripts\check_python_env.ps1') -Json | ConvertFrom-Json | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'Python environment smoke test failed.' }
-    $searchJson = & $ps.Source -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'skills\skills-search\scripts\skills_search.ps1') -Keyword '视频' -Root $repoRoot -Json | ConvertFrom-Json
+    # Use an ASCII folder-name token so Windows PowerShell 5.1 cannot misdecode a UTF-8/no-BOM Chinese literal.
+    $searchJson = & $ps.Source -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'skills\skills-search\scripts\skills_search.ps1') -Keyword 'video' -Root $repoRoot -Json | ConvertFrom-Json
     if (@($searchJson).Count -lt 1) { throw 'Skill search smoke test returned no result.' }
     $env:WEATHER_DATA_DIR = Join-Path $smokeRoot 'weather'
     & $ps.Source -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repoRoot 'skills\weather-forecast\scripts\weather_db.ps1') -Command set_city -City 'Shanghai' | Out-Null

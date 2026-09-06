@@ -4,7 +4,8 @@
     "dependencyClosure": "requiredSkills are the minimum useful capability; optionalSkills may be skipped with an explicit safe fallback.",
     "runtimeClosure": "runtimeDependencies describe the complete offline runtime family needed by required or optional skills.",
     "connectionClosure": "connectionDependencies name guided MCP/API setup; credentials are never bundled.",
-    "safeDegradation": "An agent must not claim a missing skill, runtime, MCP server, API or credential is available."
+    "safeDegradation": "An agent must not claim a missing skill, runtime, MCP server, API or credential is available.",
+    "agentStatus": "status is derived only from requiredSkills; optionalSkills, runtimeDependencies and connectionDependencies are enhancements and never downgrade the base Agent."
   },
   "agents": [
     {
@@ -17,7 +18,7 @@
       "skills": ["multi-search-engine", "image-prompt-generator", "video-prompt-generator", "web-search-extraction", "data-assistant", "docx-butler", "excel-xlsx", "word-docx", "pdf-processing-toolkit", "powerpoint-pptx"],
       "runtimeDependencies": ["runtime.python312", "runtime.python312-wheelhouse"],
       "connectionDependencies": ["api.dashscope-web-search"],
-      "status": "auto-installable-runtime",
+      "status": "core-ready",
       "readiness": {"minimum": "core-ready", "fallback": "没有 Python 时先完成文字、研究框架和提示词；没有联网服务时只使用用户材料。"}
     },
     {
@@ -30,7 +31,7 @@
       "skills": ["academic-research", "competitor-intelligence", "industry-analysis", "user-research", "market-sizing-analysis", "multi-search-engine", "web-search-extraction"],
       "runtimeDependencies": [],
       "connectionDependencies": ["api.dashscope-web-search"],
-      "status": "guided-config",
+      "status": "core-ready",
       "readiness": {"minimum": "core-ready", "fallback": "没有联网连接时只基于用户提供的论文、链接和数据，并标注无法实时核验。"}
     },
     {
@@ -43,7 +44,7 @@
       "skills": ["xiaohongshu-writing", "image-prompt-generator", "video-prompt-generator", "wechat-article-creator", "web-search-extraction", "image-2", "seedance2-0-video-gen"],
       "runtimeDependencies": ["runtime.python312", "runtime.python312-wheelhouse"],
       "connectionDependencies": ["api.dashscope-web-search", "api.image-2", "api.seedance"],
-      "status": "guided-config",
+      "status": "core-ready",
       "readiness": {"minimum": "core-ready", "fallback": "没有图像/视频服务时输出可直接交给外部生成器的提示词和分镜，不伪造生成结果。"}
     },
     {
@@ -69,7 +70,7 @@
       "skills": ["painpoint-analyzer", "offer-designer", "traffic-hunter", "conversion-optimizer", "growth-analyst", "web-search-extraction"],
       "runtimeDependencies": [],
       "connectionDependencies": ["api.dashscope-web-search"],
-      "status": "guided-config",
+      "status": "core-ready",
       "readiness": {"minimum": "core-ready", "fallback": "没有外部研究数据时先用用户提供的业务数据，所有市场数字和增长判断都标明假设。"}
     },
     {
@@ -82,7 +83,7 @@
       "skills": ["daily-reflection", "weather-forecast", "weather", "fitness-coach", "meal-planner", "travel-planner", "multi-search-engine", "web-search-extraction"],
       "runtimeDependencies": ["runtime.python312", "runtime.python312-wheelhouse"],
       "connectionDependencies": ["api.dashscope-web-search"],
-      "status": "auto-installable-runtime",
+      "status": "core-ready",
       "readiness": {"minimum": "core-ready", "fallback": "没有 Python 时保留计划、清单和复盘文本；没有实时网络时不声称天气、交通或价格已核验；健康建议不替代医生。"}
     },
     {
@@ -95,7 +96,7 @@
       "skills": ["efficiency-toolkit", "email-expert", "meeting-secretary", "data-assistant", "docx-butler", "excel-xlsx", "word-docx", "powerpoint-pptx", "pdf-processing-toolkit"],
       "runtimeDependencies": ["runtime.python312", "runtime.python312-wheelhouse"],
       "connectionDependencies": [],
-      "status": "auto-installable-runtime",
+      "status": "core-ready",
       "readiness": {"minimum": "core-ready", "fallback": "没有文件运行时就输出结构化文本、表格设计和操作步骤，不声称文件已生成或已修改。"}
     }
   ]

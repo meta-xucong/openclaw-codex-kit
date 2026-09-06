@@ -19,7 +19,7 @@ IMAGE_2_API_BASE_URL = os.environ.get("IMAGE_2_API_BASE_URL", "").strip().rstrip
 IMAGE_GENERATION_ASYNC_URL = f"{IMAGE_2_API_BASE_URL}/api/llm/openai/v1/images/generations"
 IMAGE_EDIT_ASYNC_URL = f"{IMAGE_2_API_BASE_URL}/api/llm/openai/v1/images/edits"
 IMAGE_TASKS_BASE_URL = f"{IMAGE_2_API_BASE_URL}/api/llm/openai/v1/images/tasks"
-DEFAULT_MODEL = "custom-image-2-vip"
+DEFAULT_MODEL = os.environ.get("IMAGE_2_MODEL", "custom-image-2-vip").strip()
 SUPPORTED_SIZE_PRESETS = {
     "1:1": "2048x2048",
     "2:3": "1360x2048",

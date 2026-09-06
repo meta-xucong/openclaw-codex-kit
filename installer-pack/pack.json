@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "codex-starter",
   "version": "1.1.0",
-  "sourceCommit": "0b6497e2c6e58b205d3264a36e9abea1416ca07c",
+  "sourceCommit": "e58e5daca3176c647d40a803c23aa03fe43151b0",
   "sourceDate": "2026-09-07",
   "compatibleCodex": {
     "minCodexVersion": "0.144.0",
@@ -16,6 +16,12 @@
     ]
   },
   "statuses": [
+    "auto-installable-runtime",
+    "core-ready",
+    "guided-config",
+    "unsupported"
+  ],
+  "sourceStatuses": [
     "ready",
     "requires-credential",
     "requires-mcp",

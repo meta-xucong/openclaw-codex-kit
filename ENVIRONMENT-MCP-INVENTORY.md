@@ -18,8 +18,8 @@
 |---|---|---|---|
 | Windows 10/11 x64 | 是 | `Get-CimInstance Win32_OperatingSystem` | 安装目标环境 |
 | PowerShell 5.1+ | 是 | `$PSVersionTable.PSVersion` | 安装器和原生降级脚本 |
-| CPython 3.12.10 x64 | 按 Skill 需要 | `python --version` 或 `py -3 --version` | per-user，默认不改系统 PATH |
-| Python wheelhouse | 按 Skill 需要 | 导入检查和逐文件 SHA-256 | 完整传递依赖由后续介质安装器物化 |
+| CPython 3.12.10 x64 | 按 Skill 需要 | `cpython-312` + `win-amd64` + x64 探针 | per-user，默认不改系统 PATH；3.11/3.13 不复用 |
+| Python wheelhouse | 按 Skill 需要 | 生成 lock、完整导入检查和逐文件 SHA-256 | 公开状态为 pending，完整传递依赖由物化脚本生成 |
 | Node.js 20.x | 仅 Feishu 可选 | `node --version; npm --version` | 不属于主安装链 |
 | Git | 不属于运行时 | `git --version` | 仅用于仓库协作，不是能力包前置条件 |
 
@@ -29,9 +29,10 @@ venv 和包导入布局；安装根为 `%LocalAppData%\Programs\Python\Python312
 
 ## 离线 Python 依赖
 
-直接锁定的包在 `runtime/requirements-python-win-x64-py312.lock`；对应 direct wheel 文件名、版本、大小和
-哈希在 `runtime/wheelhouse-manifest.json`。清单不等于完整 wheelhouse：制作介质时必须生成完整传递闭包，
-然后用 `pip --require-hashes --no-index --find-links` 安装并把每个文件的哈希写入安装记录。
+直接输入在 `runtime/requirements-python-win-x64-py312.in`；`runtime/materialize-python-wheelhouse.ps1`
+会生成完整传递闭包、带 `--hash=sha256:` 的 lock 和 machine-readable wheel manifest。公开
+`runtime/wheelhouse-manifest.json` 当前是 `materializationStatus=pending`、`installReady=false`；制作介质时
+必须完成物化、签名和导入检查，然后才能用 `pip --require-hashes --no-index --find-links` 安装。
 
 | 直接包 | 锁定版本 | 主要用途 |
 |---|---:|---|
@@ -58,7 +59,9 @@ venv 和包导入布局；安装根为 `%LocalAppData%\Programs\Python\Python312
 后才启用。官方实现使用 Node.js 20+；它不是包内的可执行文件。
 
 候选对比和选择理由见 `manifest/feishu-mcp-research.md`，配置字段见 `manifest/connection-fields.json`，
-无密钥模板见 `config-fragments/feishu-official-stdio.template.toml`。
+无密钥模板见 `config-fragments/feishu-official-stdio.template.toml`。由于官方 CLI 的 `-s/--app-secret`
+是参数形式，连接向导必须用本机凭据代理读取 Secret；Secret 不得写入 Codex TOML、日志、进程启动记录
+或安装所有权清单。npm 包也必须在本地锁定 cache 中，并使用 `npm exec --offline` 健康检查。
 
 ### 直连 API
 

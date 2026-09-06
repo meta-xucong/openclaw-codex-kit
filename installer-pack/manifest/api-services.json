@@ -24,10 +24,10 @@
       "baseUrlField": "image-2.base-url",
       "defaultUrl": "",
       "path": "provider-defined",
-      "credentialFields": ["image-2.api-key"],
+      "credentialFields": ["image-2.api-key", "image-2.model"],
       "relatedSkills": ["image-2"],
       "healthCheck": "Run image_2_gen.py --help and dry-run; real submission requires explicit user confirmation and a configured endpoint.",
-      "enableWhen": ["image-2.api-key", "image-2.base-url", "runtime.python312.healthy"],
+      "enableWhen": ["image-2.api-key", "image-2.base-url", "image-2.model", "runtime.python312.healthy"],
       "failureMessage": "未配置端点或凭据时只生成不可变确认清单，不提交计费任务。",
       "disableRule": "Remove private endpoint/key references and leave the Skill installed but disabled."
     },
@@ -38,10 +38,10 @@
       "baseUrlField": "seedance.base-url",
       "defaultUrl": "",
       "path": "provider-defined",
-      "credentialFields": ["seedance.api-key"],
+      "credentialFields": ["seedance.api-key", "seedance.model"],
       "relatedSkills": ["seedance2-0-video-gen"],
       "healthCheck": "Run seedance_video_gen.py --help and confirmation/dry-run; do not submit a paid task during health check.",
-      "enableWhen": ["seedance.api-key", "seedance.base-url", "runtime.python312.healthy"],
+      "enableWhen": ["seedance.api-key", "seedance.base-url", "seedance.model", "runtime.python312.healthy"],
       "failureMessage": "未配置端点或凭据时只提供脚本和确认清单，不声称已生成视频。",
       "disableRule": "Unset private endpoint/key references and keep the service disabled."
     }

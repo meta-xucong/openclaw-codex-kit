@@ -33,7 +33,8 @@
       "defaultUrl": "",
       "path": "provider-defined",
       "credentialFields": [
-        "image-2.api-key"
+        "image-2.api-key",
+        "image-2.model"
       ],
       "relatedSkills": [
         "image-2"
@@ -42,6 +43,7 @@
       "enableWhen": [
         "image-2.api-key",
         "image-2.base-url",
+        "image-2.model",
         "runtime.python312.healthy"
       ],
       "failureMessage": "未配置端点或凭据时只生成不可变确认清单，不提交计费任务。",
@@ -55,7 +57,8 @@
       "defaultUrl": "",
       "path": "provider-defined",
       "credentialFields": [
-        "seedance.api-key"
+        "seedance.api-key",
+        "seedance.model"
       ],
       "relatedSkills": [
         "seedance2-0-video-gen"
@@ -64,6 +67,7 @@
       "enableWhen": [
         "seedance.api-key",
         "seedance.base-url",
+        "seedance.model",
         "runtime.python312.healthy"
       ],
       "failureMessage": "未配置端点或凭据时只提供脚本和确认清单，不声称已生成视频。",

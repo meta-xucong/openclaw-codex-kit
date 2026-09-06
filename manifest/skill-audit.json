@@ -16,7 +16,8 @@
   "policy": {
     "defaultInstall": "installByDefault=true only",
     "implicitInvocation": "non-core-ready skills are disabled until enableWhen passes",
-    "dependencyModel": "Each dependency is an object; status never hides runtime, connection, credential, or capability closure."
+    "dependencyModel": "Each dependency is an object; status never hides runtime, connection, credential, or capability closure.",
+    "pythonRuntime": {"platform": "win_amd64", "implementation": "cpython", "abi": "cp312", "version": "3.12.x", "materializationStatus": "pending", "installReady": false}
   },
   "skills": [
     {
@@ -90,9 +91,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -212,9 +215,11 @@
           "kind": "runtime",
           "required": false,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "可先使用 Codex 原生工作流；启用本地脚本时再安装 Python。"
         }
       ],
@@ -246,9 +251,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -324,9 +331,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -437,9 +446,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -602,9 +613,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         }
       ],
@@ -636,9 +649,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -766,9 +781,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -873,9 +890,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -972,9 +991,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         }
       ],
@@ -1136,9 +1157,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -1203,9 +1226,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -1314,9 +1339,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -1435,9 +1462,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -1509,9 +1538,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -1599,9 +1630,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -1782,9 +1815,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -1843,9 +1878,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {
@@ -1885,9 +1922,11 @@
           "kind": "runtime",
           "required": true,
           "autoInstallable": true,
-          "minVersion": "3.11",
+          "minVersion": "3.12",
           "lockedVersion": "3.12.10",
-          "healthCheck": "python --version; py -3 --version",
+          "abi": "cp312",
+          "platform": "win_amd64",
+          "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
           "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。"
         },
         {

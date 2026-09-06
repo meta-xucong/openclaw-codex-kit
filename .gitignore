@@ -23,6 +23,7 @@
 
 # Offline runtime media is supplied separately from the public starter kit
 runtime/wheelhouse/
+runtime/materialized/
 runtime/*.whl
 runtime/*.zip
 runtime/*.exe

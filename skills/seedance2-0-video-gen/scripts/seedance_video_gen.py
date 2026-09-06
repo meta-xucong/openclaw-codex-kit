@@ -26,6 +26,7 @@ else:
 # remain usable without them; real submission/query requires both values.
 API_KEY = os.environ.get("SEEDANCE_API_KEY", "").strip()
 API_KEY_LOAD_ERROR = None if API_KEY else "缺少 SEEDANCE_API_KEY 环境变量。"
+SEEDANCE_MODEL = os.environ.get("SEEDANCE_MODEL", "doubao-seedance-2-0-260128").strip()
 
 
 def parse_json_response(raw):
@@ -1456,7 +1457,7 @@ def build_video_request_payload(prompt, duration=None, image_paths=None, audio_p
         )
 
     payload = {
-        "model": "doubao-seedance-2-0-260128",
+        "model": SEEDANCE_MODEL,
         "ratio": ratio,
         "watermark": bool(watermark),
         "return_last_frame": True,

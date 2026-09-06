@@ -8,7 +8,7 @@
 - `agents/`：7 个按功能命名的 Codex Agent TOML。
 - `skills/`：50 个独立 Skill；非核心 Skill 额外带 `agents/openai.yaml`，默认关闭隐式调用，避免缺依赖时误触发。
 - `manifest/`：50 个 Skill 的逐项审计、7 个 Agent 的依赖闭包、运行时、MCP、API 和连接字段契约。
-- `runtime/`：Windows x64 / CPython 3.12 的直接依赖锁文件和 wheelhouse 清单；不放二进制。
+- `runtime/`：Windows x64 / CPython 3.12 的直接依赖输入、传递依赖物化脚本和 wheelhouse 状态清单；不放二进制。
 - `config-fragments/`：无密钥的 Codex MCP、Skill gating 和连接配置模板。
 - `installer-pack/`：由脚本生成、可复制到其他电脑的完整能力包。
 - `scripts/`：构建、验收和安装脚本。
@@ -80,16 +80,17 @@ Skill 或全局 `AGENTS.md`。它会校验 `file-manifest.json` 与 `checksums.s
 ### 运行时策略
 
 需要真实 Python 功能的 Skill 使用 U 盘后续安装器提供的 Windows x64 CPython 3.12.10 per-user 运行时，
-默认安装根为 `%LocalAppData%\Programs\Python\Python312`，不修改系统 PATH。随后用
-`runtime/requirements-python-win-x64-py312.lock` 和 `runtime/wheelhouse-manifest.json` 安装完整的离线
-传递依赖；所有文件都应在介质制作阶段记录 SHA-256。官方 Feishu MCP 的 Node.js 20 仅是可选连接依赖，
-不是主安装链。具体文件名、签名、返回码、健康检查和回滚策略见 [`manifest/runtime-artifacts.json`](manifest/runtime-artifacts.json)。
+默认安装根为 `%LocalAppData%\Programs\Python\Python312`，不修改系统 PATH；只复用通过 `cpython-312`
+和 `win_amd64` 检查的解释器。`runtime/requirements-python-win-x64-py312.in` 是直接输入，物化脚本会
+生成完整传递依赖、逐 wheel SHA-256 和真正可执行的 `--require-hashes` lock。公开清单当前明确为
+`materializationStatus=pending`，因此运行时尚未标记为 install-ready。具体文件名、签名、返回码、健康检查
+和回滚策略见 [`manifest/runtime-artifacts.json`](manifest/runtime-artifacts.json)。
 
 ## MCP、API 与连接配置
 
 三类内容分开管理：
 
-- MCP：当前只登记一个需向导配置的 `feishu` 服务，见 [`manifest/mcp-servers.json`](manifest/mcp-servers.json)。
+- MCP：当前只登记一个需向导配置的 `feishu` 服务，见 [`manifest/mcp-servers.json`](manifest/mcp-servers.json)。它必须使用已锁定的离线 npm cache 和本机凭据 wrapper，不能用 `npx --yes` 作为健康检查。
 - 直连 API：DashScope 网页搜索、图像服务、视频服务，见 [`manifest/api-services.json`](manifest/api-services.json)。
 - 连接字段：统一的密钥、端点、认证方式、校验和能力映射，见 [`manifest/connection-fields.json`](manifest/connection-fields.json)。
 

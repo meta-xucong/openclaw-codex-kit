@@ -39,6 +39,27 @@
   ],
   "dependencyCatalog": [
     {
+      "id": "api.dashscope-web-search",
+      "kind": "connection",
+      "name": "api.dashscope-web-search",
+      "required": false,
+      "autoInstallable": false,
+      "healthCheck": "api.dashscope-web-search.healthy",
+      "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+      "dependentCapabilities": [
+        "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+      ],
+      "dependentSkills": [],
+      "dependentAgents": [
+        "general",
+        "research",
+        "content",
+        "investment",
+        "growth",
+        "lifestyle"
+      ]
+    },
+    {
       "id": "api.image-2",
       "kind": "api-service",
       "required": true,
@@ -53,6 +74,9 @@
       "dependentSkills": [
         "image-2",
         "wechat-article-creator"
+      ],
+      "dependentAgents": [
+        "content"
       ]
     },
     {
@@ -69,6 +93,9 @@
       ],
       "dependentSkills": [
         "seedance2-0-video-gen"
+      ],
+      "dependentAgents": [
+        "content"
       ]
     },
     {
@@ -486,9 +513,11 @@
       "kind": "runtime",
       "required": true,
       "autoInstallable": true,
-      "minVersion": "3.11",
+      "minVersion": "3.12",
       "lockedVersion": "3.12.10",
-      "healthCheck": "python --version; py -3 --version",
+      "abi": "cp312",
+      "platform": "win_amd64",
+      "healthCheck": "python-env-setup/scripts/check_python_env.ps1 -Json; require cpython-312/win_amd64",
       "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。",
       "dependentCapabilities": [
         "A 股行情",
@@ -515,6 +544,33 @@
         "web-search-extraction",
         "wechat-article-creator",
         "word-docx"
+      ],
+      "dependentAgents": [
+        "general",
+        "content",
+        "investment",
+        "lifestyle",
+        "office"
+      ]
+    },
+    {
+      "id": "runtime.python312-wheelhouse",
+      "kind": "runtime",
+      "name": "runtime.python312-wheelhouse",
+      "required": false,
+      "autoInstallable": true,
+      "healthCheck": "runtime.python312-wheelhouse.healthy",
+      "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+      "dependentCapabilities": [
+        "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+      ],
+      "dependentSkills": [],
+      "dependentAgents": [
+        "general",
+        "content",
+        "investment",
+        "lifestyle",
+        "office"
       ]
     },
     {
@@ -1736,7 +1792,7 @@
       "file": "agents/general.toml",
       "name": "全能官",
       "description": "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。",
-      "status": "auto-installable-runtime",
+      "status": "core-ready",
       "readiness": {
         "minimum": "core-ready",
         "fallback": "没有 Python 时先完成文字、研究框架和提示词；没有联网服务时只使用用户材料。"
@@ -1763,6 +1819,8 @@
         "runtime.python312-wheelhouse"
       ],
       "dependencyTypes": [
+        "connection",
+        "runtime",
         "skill"
       ],
       "dependencies": [
@@ -1875,6 +1933,42 @@
           "dependentCapabilities": [
             "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
           ]
+        },
+        {
+          "id": "runtime.python312",
+          "kind": "runtime",
+          "name": "runtime.python312",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
+        },
+        {
+          "id": "runtime.python312-wheelhouse",
+          "kind": "runtime",
+          "name": "runtime.python312-wheelhouse",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312-wheelhouse.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
+        },
+        {
+          "id": "api.dashscope-web-search",
+          "kind": "connection",
+          "name": "api.dashscope-web-search",
+          "required": false,
+          "autoInstallable": false,
+          "healthCheck": "api.dashscope-web-search.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
         }
       ],
       "dependentCapabilities": [
@@ -1886,7 +1980,7 @@
       "file": "agents/research.toml",
       "name": "研究官",
       "description": "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。",
-      "status": "guided-config",
+      "status": "core-ready",
       "readiness": {
         "minimum": "core-ready",
         "fallback": "没有联网连接时只基于用户提供的论文、链接和数据，并标注无法实时核验。"
@@ -1907,6 +2001,7 @@
       ],
       "runtimeDependencies": [],
       "dependencyTypes": [
+        "connection",
         "skill"
       ],
       "dependencies": [
@@ -1986,6 +2081,18 @@
           "dependentCapabilities": [
             "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。"
           ]
+        },
+        {
+          "id": "api.dashscope-web-search",
+          "kind": "connection",
+          "name": "api.dashscope-web-search",
+          "required": false,
+          "autoInstallable": false,
+          "healthCheck": "api.dashscope-web-search.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。"
+          ]
         }
       ],
       "dependentCapabilities": [
@@ -1997,7 +2104,7 @@
       "file": "agents/content.toml",
       "name": "创作官",
       "description": "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。",
-      "status": "guided-config",
+      "status": "core-ready",
       "readiness": {
         "minimum": "core-ready",
         "fallback": "没有图像/视频服务时输出可直接交给外部生成器的提示词和分镜，不伪造生成结果。"
@@ -2023,6 +2130,8 @@
         "runtime.python312-wheelhouse"
       ],
       "dependencyTypes": [
+        "connection",
+        "runtime",
         "skill"
       ],
       "dependencies": [
@@ -2102,6 +2211,66 @@
           "dependentCapabilities": [
             "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
           ]
+        },
+        {
+          "id": "runtime.python312",
+          "kind": "runtime",
+          "name": "runtime.python312",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
+          ]
+        },
+        {
+          "id": "runtime.python312-wheelhouse",
+          "kind": "runtime",
+          "name": "runtime.python312-wheelhouse",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312-wheelhouse.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
+          ]
+        },
+        {
+          "id": "api.dashscope-web-search",
+          "kind": "connection",
+          "name": "api.dashscope-web-search",
+          "required": false,
+          "autoInstallable": false,
+          "healthCheck": "api.dashscope-web-search.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
+          ]
+        },
+        {
+          "id": "api.image-2",
+          "kind": "connection",
+          "name": "api.image-2",
+          "required": false,
+          "autoInstallable": false,
+          "healthCheck": "api.image-2.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
+          ]
+        },
+        {
+          "id": "api.seedance",
+          "kind": "connection",
+          "name": "api.seedance",
+          "required": false,
+          "autoInstallable": false,
+          "healthCheck": "api.seedance.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
+          ]
         }
       ],
       "dependentCapabilities": [
@@ -2136,6 +2305,8 @@
         "runtime.python312-wheelhouse"
       ],
       "dependencyTypes": [
+        "connection",
+        "runtime",
         "skill"
       ],
       "dependencies": [
@@ -2204,6 +2375,42 @@
           "dependentCapabilities": [
             "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
           ]
+        },
+        {
+          "id": "runtime.python312",
+          "kind": "runtime",
+          "name": "runtime.python312",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
+          ]
+        },
+        {
+          "id": "runtime.python312-wheelhouse",
+          "kind": "runtime",
+          "name": "runtime.python312-wheelhouse",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312-wheelhouse.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
+          ]
+        },
+        {
+          "id": "api.dashscope-web-search",
+          "kind": "connection",
+          "name": "api.dashscope-web-search",
+          "required": false,
+          "autoInstallable": false,
+          "healthCheck": "api.dashscope-web-search.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
+          ]
         }
       ],
       "dependentCapabilities": [
@@ -2215,7 +2422,7 @@
       "file": "agents/growth.toml",
       "name": "增长官",
       "description": "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。",
-      "status": "guided-config",
+      "status": "core-ready",
       "readiness": {
         "minimum": "core-ready",
         "fallback": "没有外部研究数据时先用用户提供的业务数据，所有市场数字和增长判断都标明假设。"
@@ -2235,6 +2442,7 @@
       ],
       "runtimeDependencies": [],
       "dependencyTypes": [
+        "connection",
         "skill"
       ],
       "dependencies": [
@@ -2303,6 +2511,18 @@
           "dependentCapabilities": [
             "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。"
           ]
+        },
+        {
+          "id": "api.dashscope-web-search",
+          "kind": "connection",
+          "name": "api.dashscope-web-search",
+          "required": false,
+          "autoInstallable": false,
+          "healthCheck": "api.dashscope-web-search.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。"
+          ]
         }
       ],
       "dependentCapabilities": [
@@ -2314,7 +2534,7 @@
       "file": "agents/lifestyle.toml",
       "name": "生活官",
       "description": "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。",
-      "status": "auto-installable-runtime",
+      "status": "core-ready",
       "readiness": {
         "minimum": "core-ready",
         "fallback": "没有 Python 时保留计划、清单和复盘文本；没有实时网络时不声称天气、交通或价格已核验；健康建议不替代医生。"
@@ -2339,6 +2559,8 @@
         "runtime.python312-wheelhouse"
       ],
       "dependencyTypes": [
+        "connection",
+        "runtime",
         "skill"
       ],
       "dependencies": [
@@ -2429,6 +2651,42 @@
           "dependentCapabilities": [
             "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
           ]
+        },
+        {
+          "id": "runtime.python312",
+          "kind": "runtime",
+          "name": "runtime.python312",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
+          ]
+        },
+        {
+          "id": "runtime.python312-wheelhouse",
+          "kind": "runtime",
+          "name": "runtime.python312-wheelhouse",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312-wheelhouse.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
+          ]
+        },
+        {
+          "id": "api.dashscope-web-search",
+          "kind": "connection",
+          "name": "api.dashscope-web-search",
+          "required": false,
+          "autoInstallable": false,
+          "healthCheck": "api.dashscope-web-search.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
+          ]
         }
       ],
       "dependentCapabilities": [
@@ -2440,7 +2698,7 @@
       "file": "agents/office.toml",
       "name": "办公官",
       "description": "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。",
-      "status": "auto-installable-runtime",
+      "status": "core-ready",
       "readiness": {
         "minimum": "core-ready",
         "fallback": "没有文件运行时就输出结构化文本、表格设计和操作步骤，不声称文件已生成或已修改。"
@@ -2464,6 +2722,7 @@
         "runtime.python312-wheelhouse"
       ],
       "dependencyTypes": [
+        "runtime",
         "skill"
       ],
       "dependencies": [
@@ -2562,6 +2821,30 @@
           "required": false,
           "autoInstallable": true,
           "healthCheck": "skills/pdf-processing-toolkit/SKILL.md exists",
+          "dependentCapabilities": [
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
+          ]
+        },
+        {
+          "id": "runtime.python312",
+          "kind": "runtime",
+          "name": "runtime.python312",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+          "dependentCapabilities": [
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
+          ]
+        },
+        {
+          "id": "runtime.python312-wheelhouse",
+          "kind": "runtime",
+          "name": "runtime.python312-wheelhouse",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "runtime.python312-wheelhouse.healthy",
+          "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
           "dependentCapabilities": [
             "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
           ]

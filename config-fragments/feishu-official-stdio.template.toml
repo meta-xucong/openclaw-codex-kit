@@ -1,8 +1,9 @@
-# Guided configuration only. Replace placeholders in a private rendered file before enabling.
+# Guided configuration only. The connection wizard must render a private local credential wrapper.
+# Do not replace the secret placeholder with a literal value in config.toml.
 [mcp_servers.feishu]
 enabled = false
-command = "npx"
-args = ["-y", "@larksuiteoapi/lark-mcp@0.5.1", "mcp", "-a", "__FEISHU_APP_ID__", "-s", "__FEISHU_APP_SECRET__"]
+command = "__FEISHU_LOCAL_CREDENTIAL_WRAPPER__"
+args = ["--package-cache", "__FEISHU_MCP_CACHE__", "--app-id-field", "feishu.app-id", "--secret-ref", "feishu.app-secret", "--domain", "__FEISHU_DOMAIN__", "mcp"]
 startup_timeout_sec = 30
 tool_timeout_sec = 120
 default_tools_approval_mode = "prompt"

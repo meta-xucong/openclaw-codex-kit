@@ -139,6 +139,22 @@
       ]
     },
     {
+      "id": "image-2.model",
+      "serviceId": "image-2",
+      "label": "图像模型",
+      "type": "text",
+      "required": true,
+      "secret": false,
+      "defaultUrl": "",
+      "validation": {
+        "minLength": 1
+      },
+      "help": "必须与服务端点支持的模型一致；没有模型名时不提交计费任务。",
+      "capabilities": [
+        "api.image-2"
+      ]
+    },
+    {
       "id": "seedance.api-key",
       "serviceId": "seedance",
       "label": "视频服务 API Key",
@@ -166,6 +182,22 @@
         "scheme": "https"
       },
       "help": "由服务提供方给出；Starter Kit 不猜测供应商端点。",
+      "capabilities": [
+        "api.seedance"
+      ]
+    },
+    {
+      "id": "seedance.model",
+      "serviceId": "seedance",
+      "label": "视频模型",
+      "type": "text",
+      "required": true,
+      "secret": false,
+      "defaultUrl": "",
+      "validation": {
+        "minLength": 1
+      },
+      "help": "必须与视频服务端点支持的模型一致；没有模型名时不提交计费任务。",
       "capabilities": [
         "api.seedance"
       ]

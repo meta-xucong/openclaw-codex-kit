@@ -25,7 +25,9 @@ PACK_VERSION = "1.1.0"
 MIN_CODEX_VERSION = "0.144.0"
 TESTED_CODEX_VERSION = os.environ.get("CODEX_TESTED_VERSION", "0.144.1")
 STATUSES = {"ready", "requires-runtime", "requires-mcp", "requires-credential", "unsupported/disabled"}
-TRANSIENT_NAMES = {".cache", ".git", ".codex", ".learnings", "drafts", "output", "__pycache__", "sessions", "memory", "logs", "createContent", "codex-data", "hooks", "node_modules", ".venv", "venv", ".ds_store", "thumbs.db", "desktop.ini"}
+AFTER_STATUSES = {"core-ready", "auto-installable-runtime", "guided-config", "unsupported"}
+PACK_STATUSES = AFTER_STATUSES
+TRANSIENT_NAMES = {".cache", ".git", ".codex", ".learnings", "drafts", "output", "__pycache__", "sessions", "memory", "logs", "createContent", "codex-data", "hooks", "node_modules", ".venv", "venv", "wheelhouse", "materialized", ".ds_store", "thumbs.db", "desktop.ini"}
 # Plain `.lock` files can be deliberate reproducibility contracts (for example the
 # Python requirements lock); cache/database locks are filtered explicitly below.
 TRANSIENT_SUFFIXES = {".db", ".sqlite", ".sqlite3"}
@@ -176,17 +178,53 @@ def build_dependencies(audit: dict, agents: dict) -> dict:
         optional = item.get("optionalSkills", [])
         deps = [{"id":f"skill.{skill}","kind":"skill","name":skill,"required":True,"autoInstallable":True,"healthCheck":f"skills/{skill}/SKILL.md exists","dependentCapabilities":[item["description"]]} for skill in required]
         deps += [{"id":f"skill.{skill}","kind":"skill","name":skill,"required":False,"autoInstallable":True,"healthCheck":f"skills/{skill}/SKILL.md exists","dependentCapabilities":[item["description"]]} for skill in optional]
+        for dependency_id in item.get("runtimeDependencies", []) + item.get("connectionDependencies", []):
+            kind = "runtime" if str(dependency_id).startswith("runtime.") else "connection"
+            dependency = {
+                "id": dependency_id,
+                "kind": kind,
+                "name": dependency_id,
+                "required": False,
+                "autoInstallable": kind == "runtime",
+                "healthCheck": f"{dependency_id}.healthy",
+                "failureMessage": "可选增强未就绪时保留 Agent 基础能力并明确降级。",
+                "dependentCapabilities": [item["description"]],
+            }
+            deps.append(dependency)
+            if dependency_id not in catalog:
+                catalog[dependency_id] = dict(dependency)
+                catalog[dependency_id]["dependentSkills"] = []
+            catalog[dependency_id].setdefault("dependentAgents", [])
+            if item["id"] not in catalog[dependency_id]["dependentAgents"]:
+                catalog[dependency_id]["dependentAgents"].append(item["id"])
+            catalog[dependency_id]["required"] = bool(catalog[dependency_id].get("required")) or bool(dependency.get("required"))
         agent_items.append({
             "id": item["id"], "file": f"agents/{item['file']}", "name": item["name"], "description": item["description"],
             "status": item.get("status"), "readiness": item.get("readiness", {}), "requiredSkills": required, "optionalSkills": optional,
             "connectionDependencies": item.get("connectionDependencies", []), "runtimeDependencies": item.get("runtimeDependencies", []),
-            "dependencyTypes": ["skill"], "dependencies": deps, "dependentCapabilities":[item["description"]]
+            "dependencyTypes": sorted({dep.get("kind", "unknown") for dep in deps}), "dependencies": deps, "dependentCapabilities":[item["description"]]
         })
     system = [
         {"type":"system","name":"Windows 10/11","minVersion":"10","architecture":"x64","required":True,"offlineInstallerFilename":None,"detection":"Get-CimInstance Win32_OperatingSystem","silentArgs":None,"restart":"none","license":"Microsoft","source":"Windows","dependentCapabilities":["installer"]},
         {"type":"runtime","name":"PowerShell","minVersion":"5.1","architecture":"x64","required":True,"offlineInstallerFilename":None,"detection":"$PSVersionTable.PSVersion","silentArgs":None,"restart":"none","license":"Microsoft","source":"Windows","dependentCapabilities":["installer"]}
     ]
     return {"schemaVersion":2,"id":PACK_ID,"version":PACK_VERSION,"policy":"No secrets, caches, history, databases, drafts or user content.","system":system,"dependencyCatalog":sorted(catalog.values(), key=lambda value: value["id"]),"skills":skills,"agents":agent_items}
+
+
+def derived_agent_status(item: dict, audit: dict) -> str:
+    skill_map = {skill["id"]: skill for skill in audit["skills"]}
+    statuses = []
+    for skill_id in item.get("requiredSkills", item.get("skills", [])):
+        if skill_id not in skill_map:
+            raise SystemExit(f"Agent required skill missing from audit: {item['id']} -> {skill_id}")
+        statuses.append(skill_map[skill_id].get("afterRemediationStatus"))
+    if any(status == "unsupported" for status in statuses):
+        return "unsupported"
+    if any(status == "guided-config" for status in statuses):
+        return "guided-config"
+    if any(status == "auto-installable-runtime" for status in statuses):
+        return "auto-installable-runtime"
+    return "core-ready"
 
 
 def validate_sources(skill_names: list[str], audit: dict, agents: dict) -> None:
@@ -217,6 +255,11 @@ def validate_sources(skill_names: list[str], audit: dict, agents: dict) -> None:
                 raise SystemExit(f"Dependency must be a multidimensional object: {item['id']}")
     agent_names = set()
     for item in agents["agents"]:
+        expected_status = derived_agent_status(item, audit)
+        if item.get("status") != expected_status:
+            raise SystemExit(f"Agent status must be derived from requiredSkills: {item['id']} expected {expected_status} got {item.get('status')}")
+        if item.get("readiness", {}).get("minimum") != expected_status:
+            raise SystemExit(f"Agent readiness minimum must match requiredSkills: {item['id']}")
         path = ROOT / "agents" / item["file"]
         if not path.is_file():
             raise SystemExit(f"Agent file missing: {item['file']}")
@@ -315,6 +358,8 @@ def build() -> dict:
         safe_copy_tree(source, PACK / "skills" / name)
     safe_copy_tree(ROOT / "runtime", PACK / "runtime")
     safe_copy_tree(ROOT / "config-fragments", PACK / "config-fragments")
+    for runtime_script in ["materialize-python-wheelhouse.py", "materialize-python-wheelhouse.ps1"]:
+        shutil.copy2(ROOT / "scripts" / runtime_script, PACK / "runtime" / runtime_script)
     for relative in ["README.md", "ENVIRONMENT-MCP-INVENTORY.md"]:
         shutil.copy2(ROOT / relative, PACK / relative)
     for relative in [
@@ -353,7 +398,8 @@ def build() -> dict:
             "agentRoot":"%USERPROFILE%\\.codex\\agents",
             "windows":["10","11"]
         },
-        "statuses": sorted(STATUSES),
+        "statuses": sorted(PACK_STATUSES),
+        "sourceStatuses": sorted(STATUSES),
         "defaultEnabled": {"skills": default_skills, "agents": default_agents},
         "sourcePolicy": {"noSecrets":True,"noUserContent":True,"noRuntimeCache":True,"ownedFilesOnly":True,"noGlobalAgentsMd":True},
         "installOrder": [

@@ -9,7 +9,7 @@
 - Windows 10/11 优先的安装、打包和验证脚本
 - MCP/API 清单、连接字段、无密钥配置模板和环境依赖说明
 - 25 个核心默认安装项、完整依赖闭包与 SHA-256 文件清单
-- Python 运行时锁文件、wheelhouse 直接包清单和 Windows per-user 安装契约
+- Python 运行时直接输入、传递依赖物化脚本、wheelhouse 状态清单和 Windows per-user 安装契约
 
 ## 明确不纳入
 
