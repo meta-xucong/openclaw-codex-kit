@@ -108,7 +108,7 @@
     },
     {
       "path": "manifest/connection-fields.json",
-      "sha256": "186d76b9509d9cf680c94f1c75c3620b0bf275416ecae46159fda002b439f3a5",
+      "sha256": "540aea1f37bc9a098afba0040f75d9f9765c5228dfc01b48b7316966c54f48b6",
       "bytes": 3690,
       "owned": true
     },
@@ -192,7 +192,7 @@
     },
     {
       "path": "pack.json",
-      "sha256": "94e8e201c319f0b0817194c8f88ad1db1307a6dd558fcc980513b08243ba656e",
+      "sha256": "6985a91c049d1d58e762adb37debc19e0879f4faaefd2f1bdf4603e4ded9a170",
       "bytes": 3118,
       "owned": true
     },
