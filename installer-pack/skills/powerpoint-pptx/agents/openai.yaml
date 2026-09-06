@@ -1,0 +1,5 @@
+interface:
+  display_name: "演示文稿"
+  short_description: "创建、编辑和自动化 PowerPoint 演示文稿。"
+policy:
+  allow_implicit_invocation: false

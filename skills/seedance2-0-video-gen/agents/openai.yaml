@@ -1,0 +1,5 @@
+interface:
+  display_name: "视频生成连接"
+  short_description: "调用已配置的视频服务生成、轮询和查询视频任务。"
+policy:
+  allow_implicit_invocation: false

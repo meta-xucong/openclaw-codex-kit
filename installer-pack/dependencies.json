@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "codex-starter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "policy": "No secrets, caches, history, databases, drafts or user content.",
   "system": [
     {
@@ -35,53 +35,504 @@
       "dependentCapabilities": [
         "installer"
       ]
-    },
+    }
+  ],
+  "dependencyCatalog": [
     {
-      "type": "runtime",
-      "name": "Git",
-      "minVersion": "2.x",
-      "architecture": "x64",
-      "required": false,
-      "offlineInstallerFilename": "Git-*-64-bit.exe",
-      "detection": "git --version",
-      "silentArgs": "/VERYSILENT /NORESTART",
-      "restart": "optional",
-      "license": "GPL-2.0",
-      "source": "https://git-scm.com/download/win",
+      "id": "api.image-2",
+      "kind": "api-service",
+      "required": true,
+      "autoInstallable": false,
+      "healthCheck": "IMAGE_2_API_BASE_URL non-empty and documented /health or dry-run",
+      "failureMessage": "未配置图像服务时只生成确认清单，不提交任务。",
       "dependentCapabilities": [
-        "deployment"
+        "异步文生图",
+        "图生图",
+        "两阶段确认"
+      ],
+      "dependentSkills": [
+        "image-2",
+        "wechat-article-creator"
       ]
     },
     {
-      "type": "runtime",
-      "name": "Node.js",
-      "minVersion": "18",
-      "architecture": "x64",
-      "required": false,
-      "offlineInstallerFilename": "node-v18+-x64.msi",
-      "detection": "node --version",
-      "silentArgs": "/qn /norestart",
-      "restart": "recommended",
-      "license": "Node.js license",
-      "source": "https://nodejs.org/en/download",
+      "id": "api.seedance",
+      "kind": "api-service",
+      "required": true,
+      "autoInstallable": false,
+      "healthCheck": "SEEDANCE_API_BASE_URL non-empty and dry-run available",
+      "failureMessage": "未配置视频服务时只生成确认清单，不提交任务。",
       "dependentCapabilities": [
-        "future Node skills"
+        "视频生成",
+        "媒体顺序保护",
+        "幂等提交与轮询"
+      ],
+      "dependentSkills": [
+        "seedance2-0-video-gen"
       ]
     },
     {
-      "type": "system",
-      "name": "curl.exe",
-      "minVersion": "Windows 10",
-      "architecture": "x64",
-      "required": false,
-      "offlineInstallerFilename": null,
-      "detection": "Get-Command curl.exe",
-      "silentArgs": null,
-      "restart": "none",
-      "license": "Microsoft",
-      "source": "Windows component",
+      "id": "capability.codex-web",
+      "kind": "capability",
+      "required": true,
+      "autoInstallable": false,
+      "healthCheck": "Codex web tool available or user supplied source",
+      "failureMessage": "没有网页能力时只处理用户提供的材料。",
       "dependentCapabilities": [
-        "weather"
+        "学术检索策略",
+        "引用校验",
+        "研究设计"
+      ],
+      "dependentSkills": [
+        "academic-research",
+        "competitor-intelligence",
+        "industry-analysis",
+        "market-sizing-analysis",
+        "multi-search-engine",
+        "travel-planner",
+        "user-research",
+        "web-content-fetcher"
+      ]
+    },
+    {
+      "id": "capability.network",
+      "kind": "capability",
+      "required": true,
+      "autoInstallable": false,
+      "healthCheck": "Test-NetConnection -ComputerName wttr.in -Port 443",
+      "failureMessage": "当前为离线模式，不能提供实时数据。",
+      "dependentCapabilities": [
+        "当前天气",
+        "短期预报"
+      ],
+      "dependentSkills": [
+        "weather",
+        "weather-forecast",
+        "web-search-extraction"
+      ]
+    },
+    {
+      "id": "connection.dashscope-base-url",
+      "kind": "connection",
+      "required": true,
+      "autoInstallable": false,
+      "defaultUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "healthCheck": "URL is HTTPS and path is compatible-mode/v1",
+      "failureMessage": "未配置服务地址时不调用适配器。",
+      "dependentCapabilities": [
+        "联网搜索适配",
+        "结构化摘要"
+      ],
+      "dependentSkills": [
+        "web-search-extraction"
+      ]
+    },
+    {
+      "id": "credential.dashscope-api-key",
+      "kind": "credential",
+      "required": true,
+      "autoInstallable": false,
+      "secret": true,
+      "healthCheck": "DASHSCOPE_API_KEY non-empty",
+      "failureMessage": "未配置搜索 API 时优先使用 Codex 原生网页能力。",
+      "dependentCapabilities": [
+        "联网搜索适配",
+        "结构化摘要"
+      ],
+      "dependentSkills": [
+        "web-search-extraction"
+      ]
+    },
+    {
+      "id": "credential.image-2-api-key",
+      "kind": "credential",
+      "required": true,
+      "autoInstallable": false,
+      "secret": true,
+      "healthCheck": "IMAGE_2_API_KEY non-empty",
+      "failureMessage": "未配置凭据时不触发计费请求。",
+      "dependentCapabilities": [
+        "异步文生图",
+        "图生图",
+        "两阶段确认"
+      ],
+      "dependentSkills": [
+        "image-2"
+      ]
+    },
+    {
+      "id": "credential.seedance-api-key",
+      "kind": "credential",
+      "required": true,
+      "autoInstallable": false,
+      "secret": true,
+      "healthCheck": "SEEDANCE_API_KEY non-empty",
+      "failureMessage": "未配置凭据时不触发计费请求。",
+      "dependentCapabilities": [
+        "视频生成",
+        "媒体顺序保护",
+        "幂等提交与轮询"
+      ],
+      "dependentSkills": [
+        "seedance2-0-video-gen"
+      ]
+    },
+    {
+      "id": "external.device-pairing-runtime",
+      "kind": "external",
+      "required": true,
+      "autoInstallable": false,
+      "healthCheck": "manual",
+      "failureMessage": "缺少外部依赖时安全失败。",
+      "dependentCapabilities": [
+        "连接问题排查说明"
+      ],
+      "dependentSkills": [
+        "node-connect"
+      ]
+    },
+    {
+      "id": "external.host-specific-canvas-runtime",
+      "kind": "external",
+      "required": true,
+      "autoInstallable": false,
+      "healthCheck": "manual",
+      "failureMessage": "缺少外部依赖时安全失败。",
+      "dependentCapabilities": [
+        "HTML 原型说明"
+      ],
+      "dependentSkills": [
+        "canvas"
+      ]
+    },
+    {
+      "id": "external.windows-security-admin-tools",
+      "kind": "external",
+      "required": true,
+      "autoInstallable": false,
+      "healthCheck": "manual",
+      "failureMessage": "缺少外部依赖时安全失败。",
+      "dependentCapabilities": [
+        "主机安全检查说明"
+      ],
+      "dependentSkills": [
+        "healthcheck"
+      ]
+    },
+    {
+      "id": "mcp.feishu",
+      "kind": "mcp",
+      "required": true,
+      "autoInstallable": false,
+      "healthCheck": "codex mcp list; read-only Feishu tool probe",
+      "failureMessage": "飞书连接未健康时只提供操作步骤，不声称已读写飞书。",
+      "dependentCapabilities": [
+        "飞书文档读写"
+      ],
+      "dependentSkills": [
+        "feishu-doc",
+        "feishu-drive",
+        "feishu-perm",
+        "feishu-wiki"
+      ]
+    },
+    {
+      "id": "python.package.akshare",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "akshare",
+      "importName": "akshare",
+      "lockedVersion": "1.18.94",
+      "healthCheck": "python -c \"import akshare\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "A 股行情",
+        "财务分析",
+        "估值与筛选"
+      ],
+      "dependentSkills": [
+        "china-stock-analysis",
+        "fund-portfolio"
+      ]
+    },
+    {
+      "id": "python.package.html2text",
+      "kind": "python-package",
+      "required": false,
+      "autoInstallable": true,
+      "packageName": "html2text",
+      "importName": "html2text",
+      "lockedVersion": "2025.4.15",
+      "healthCheck": "python -c \"import html2text\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "网页正文提取",
+        "Markdown 清理"
+      ],
+      "dependentSkills": [
+        "web-content-fetcher"
+      ]
+    },
+    {
+      "id": "python.package.matplotlib",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "matplotlib",
+      "importName": "matplotlib",
+      "lockedVersion": "3.11.1",
+      "healthCheck": "python -c \"import matplotlib\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "表格分析",
+        "数据清洗",
+        "图表与 PDF 提取"
+      ],
+      "dependentSkills": [
+        "data-assistant",
+        "fund-portfolio",
+        "macro-research",
+        "venture-analysis",
+        "wealth-allocation"
+      ]
+    },
+    {
+      "id": "python.package.numpy",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "numpy",
+      "importName": "numpy",
+      "lockedVersion": "2.5.2",
+      "healthCheck": "python -c \"import numpy\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "A 股行情",
+        "财务分析",
+        "估值与筛选"
+      ],
+      "dependentSkills": [
+        "china-stock-analysis",
+        "fund-portfolio",
+        "macro-research",
+        "venture-analysis",
+        "wealth-allocation"
+      ]
+    },
+    {
+      "id": "python.package.openpyxl",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "openpyxl",
+      "importName": "openpyxl",
+      "lockedVersion": "3.1.5",
+      "healthCheck": "python -c \"import openpyxl\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "表格分析",
+        "数据清洗",
+        "图表与 PDF 提取"
+      ],
+      "dependentSkills": [
+        "data-assistant",
+        "excel-xlsx"
+      ]
+    },
+    {
+      "id": "python.package.pandas",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "pandas",
+      "importName": "pandas",
+      "lockedVersion": "3.0.5",
+      "healthCheck": "python -c \"import pandas\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "A 股行情",
+        "财务分析",
+        "估值与筛选"
+      ],
+      "dependentSkills": [
+        "china-stock-analysis",
+        "data-assistant",
+        "fund-portfolio",
+        "macro-research",
+        "venture-analysis",
+        "wealth-allocation"
+      ]
+    },
+    {
+      "id": "python.package.pdfplumber",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "pdfplumber",
+      "importName": "pdfplumber",
+      "lockedVersion": "0.11.10",
+      "healthCheck": "python -c \"import pdfplumber\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "PDF 提取",
+        "合并拆分",
+        "表单与生成"
+      ],
+      "dependentSkills": [
+        "pdf-processing-toolkit"
+      ]
+    },
+    {
+      "id": "python.package.pypdf",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "pypdf",
+      "importName": "pypdf",
+      "lockedVersion": "6.17.0",
+      "healthCheck": "python -c \"import pypdf\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "表格分析",
+        "数据清洗",
+        "图表与 PDF 提取"
+      ],
+      "dependentSkills": [
+        "data-assistant",
+        "pdf-processing-toolkit"
+      ]
+    },
+    {
+      "id": "python.package.python-docx",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "python-docx",
+      "importName": "docx",
+      "lockedVersion": "1.2.0",
+      "healthCheck": "python -c \"import docx\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "文档排版",
+        "格式转换",
+        "演示稿结构"
+      ],
+      "dependentSkills": [
+        "docx-butler",
+        "word-docx"
+      ]
+    },
+    {
+      "id": "python.package.python-pptx",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "python-pptx",
+      "importName": "pptx",
+      "lockedVersion": "1.0.2",
+      "healthCheck": "python -c \"import pptx\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "文档排版",
+        "格式转换",
+        "演示稿结构"
+      ],
+      "dependentSkills": [
+        "docx-butler",
+        "powerpoint-pptx"
+      ]
+    },
+    {
+      "id": "python.package.reportlab",
+      "kind": "python-package",
+      "required": true,
+      "autoInstallable": true,
+      "packageName": "reportlab",
+      "importName": "reportlab",
+      "lockedVersion": "5.0.1",
+      "healthCheck": "python -c \"import reportlab\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "文档排版",
+        "格式转换",
+        "演示稿结构"
+      ],
+      "dependentSkills": [
+        "docx-butler",
+        "pdf-processing-toolkit"
+      ]
+    },
+    {
+      "id": "python.package.scrapling",
+      "kind": "python-package",
+      "required": false,
+      "autoInstallable": true,
+      "packageName": "scrapling",
+      "importName": "scrapling",
+      "lockedVersion": "0.4.15",
+      "healthCheck": "python -c \"import scrapling\"",
+      "failureMessage": "离线 wheelhouse 未就绪时，明确报告缺少包，不伪造结果。",
+      "dependentCapabilities": [
+        "网页正文提取",
+        "Markdown 清理"
+      ],
+      "dependentSkills": [
+        "web-content-fetcher"
+      ]
+    },
+    {
+      "id": "runtime.python312",
+      "kind": "runtime",
+      "required": true,
+      "autoInstallable": true,
+      "minVersion": "3.11",
+      "lockedVersion": "3.12.10",
+      "healthCheck": "python --version; py -3 --version",
+      "failureMessage": "需要安装 U 盘提供的 Python 3.12 per-user 运行时。",
+      "dependentCapabilities": [
+        "A 股行情",
+        "财务分析",
+        "估值与筛选"
+      ],
+      "dependentSkills": [
+        "china-stock-analysis",
+        "daily-reflection",
+        "data-assistant",
+        "docx-butler",
+        "excel-xlsx",
+        "fitness-coach",
+        "fund-portfolio",
+        "image-2",
+        "macro-research",
+        "meal-planner",
+        "pdf-processing-toolkit",
+        "powerpoint-pptx",
+        "seedance2-0-video-gen",
+        "travel-planner",
+        "venture-analysis",
+        "wealth-allocation",
+        "web-search-extraction",
+        "wechat-article-creator",
+        "word-docx"
+      ]
+    },
+    {
+      "id": "system.powershell",
+      "kind": "system",
+      "required": true,
+      "autoInstallable": false,
+      "minVersion": "5.1",
+      "healthCheck": "$PSVersionTable.PSVersion",
+      "failureMessage": "Windows PowerShell 5.1 是安装器基础环境。",
+      "dependentCapabilities": [
+        "Python 检测",
+        "安装前检查",
+        "PATH 指引"
+      ],
+      "dependentSkills": [
+        "python-env-setup",
+        "safe-disk-operations"
       ]
     }
   ],
@@ -90,198 +541,109 @@
       "id": "academic-research",
       "path": "skills/academic-research",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
         "capability"
       ],
       "dependencies": [
-        {
-          "type": "capability",
-          "name": "native-web-or-user-sources",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "current Codex web tool or user-provided sources",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "current environment",
-          "source": "Codex or user supplied",
-          "dependentCapabilities": [
-            "学术检索策略",
-            "引用校验",
-            "研究设计"
-          ]
-        }
+        "capability.codex-web"
       ],
       "dependentCapabilities": [
         "学术检索策略",
         "引用校验",
         "研究设计"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "canvas",
       "path": "skills/canvas",
       "status": "unsupported/disabled",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "unsupported",
+      "installByDefault": false,
+      "enableWhen": [
+        "disabled"
+      ],
       "dependencyTypes": [
-        "dependency"
+        "external"
       ],
       "dependencies": [
-        {
-          "type": "dependency",
-          "name": "host-specific-canvas-runtime",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "manual check",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "verify before use",
-          "source": "user supplied",
-          "dependentCapabilities": [
-            "HTML 原型说明"
-          ]
-        }
+        "external.host-specific-canvas-runtime"
       ],
       "dependentCapabilities": [
         "HTML 原型说明"
       ],
-      "notes": "保留说明但不提供远程设备画布接口。"
+      "healthCheck": "negative test: no compatible automatic entry point; must remain disabled",
+      "notes": "保持禁用：当前能力包没有可验证的远程 Canvas 节点/画布运行时；仅提供替代建议。"
     },
     {
       "id": "china-stock-analysis",
       "path": "skills/china-stock-analysis",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "A 股行情",
-            "财务分析",
-            "估值与筛选"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "akshare",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "akshare-wheelhouse.zip",
-          "detection": "python -c \"import akshare\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "A 股行情",
-            "财务分析",
-            "估值与筛选"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "pandas",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "pandas-wheelhouse.zip",
-          "detection": "python -c \"import pandas\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "A 股行情",
-            "财务分析",
-            "估值与筛选"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "numpy",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "numpy-wheelhouse.zip",
-          "detection": "python -c \"import numpy\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "A 股行情",
-            "财务分析",
-            "估值与筛选"
-          ]
-        }
+        "runtime.python312",
+        "python.package.akshare",
+        "python.package.pandas",
+        "python.package.numpy"
       ],
       "dependentCapabilities": [
         "A 股行情",
         "财务分析",
         "估值与筛选"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "competitor-intelligence",
       "path": "skills/competitor-intelligence",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
         "capability"
       ],
       "dependencies": [
-        {
-          "type": "capability",
-          "name": "native-web-or-user-sources",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "current Codex web tool or user-provided sources",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "current environment",
-          "source": "Codex or user supplied",
-          "dependentCapabilities": [
-            "竞品矩阵",
-            "定价与模式分析",
-            "差异化建议"
-          ]
-        }
+        "capability.codex-web"
       ],
       "dependentCapabilities": [
         "竞品矩阵",
         "定价与模式分析",
         "差异化建议"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "conversion-optimizer",
       "path": "skills/conversion-optimizer",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -289,246 +651,100 @@
         "页面转化",
         "行动召唤"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "daily-reflection",
       "path": "skills/daily-reflection",
-      "status": "requires-runtime",
-      "defaultEnabled": false,
+      "status": "ready",
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "每日复盘",
-            "目标追踪",
-            "习惯与情绪记录"
-          ]
-        }
+        "runtime.python312"
       ],
       "dependentCapabilities": [
         "每日复盘",
         "目标追踪",
         "习惯与情绪记录"
       ],
-      "notes": ""
+      "healthCheck": "PowerShell JSONL log/summary round-trip",
+      "notes": "核心复盘使用 Codex 项目文件与 PowerShell JSONL；原 Python 数据库脚本只作为可选兼容增强。"
     },
     {
       "id": "data-assistant",
       "path": "skills/data-assistant",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "表格分析",
-            "数据清洗",
-            "图表与 PDF 提取"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "openpyxl",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "openpyxl-wheelhouse.zip",
-          "detection": "python -c \"import openpyxl\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "表格分析",
-            "数据清洗",
-            "图表与 PDF 提取"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "pandas",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "pandas-wheelhouse.zip",
-          "detection": "python -c \"import pandas\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "表格分析",
-            "数据清洗",
-            "图表与 PDF 提取"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "matplotlib",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "matplotlib-wheelhouse.zip",
-          "detection": "python -c \"import matplotlib\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "表格分析",
-            "数据清洗",
-            "图表与 PDF 提取"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "pypdf",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "pypdf-wheelhouse.zip",
-          "detection": "python -c \"import pypdf\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "表格分析",
-            "数据清洗",
-            "图表与 PDF 提取"
-          ]
-        }
+        "runtime.python312",
+        "python.package.openpyxl",
+        "python.package.pandas",
+        "python.package.matplotlib",
+        "python.package.pypdf"
       ],
       "dependentCapabilities": [
         "表格分析",
         "数据清洗",
         "图表与 PDF 提取"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "docx-butler",
       "path": "skills/docx-butler",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "文档排版",
-            "格式转换",
-            "演示稿结构"
-          ]
-        },
-        {
-          "type": "runtime",
-          "name": "Python package runtime",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "文档排版",
-            "格式转换",
-            "演示稿结构"
-          ]
-        },
-        {
-          "type": "runtime",
-          "name": "Python package runtime",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "文档排版",
-            "格式转换",
-            "演示稿结构"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "reportlab",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "reportlab-wheelhouse.zip",
-          "detection": "python -c \"import reportlab\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "文档排版",
-            "格式转换",
-            "演示稿结构"
-          ]
-        }
+        "runtime.python312",
+        "python.package.python-docx",
+        "python.package.python-pptx",
+        "python.package.reportlab"
       ],
       "dependentCapabilities": [
         "文档排版",
         "格式转换",
         "演示稿结构"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "efficiency-toolkit",
       "path": "skills/efficiency-toolkit",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -536,13 +752,19 @@
         "笔记与待办",
         "时间规划"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "email-expert",
       "path": "skills/email-expert",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -550,334 +772,186 @@
         "模板",
         "跟进与语气优化"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "excel-xlsx",
       "path": "skills/excel-xlsx",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "Excel 读写",
-            "公式与日期",
-            "工作簿生成"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "openpyxl",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "openpyxl-wheelhouse.zip",
-          "detection": "python -c \"import openpyxl\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "Excel 读写",
-            "公式与日期",
-            "工作簿生成"
-          ]
-        }
+        "runtime.python312",
+        "python.package.openpyxl"
       ],
       "dependentCapabilities": [
         "Excel 读写",
         "公式与日期",
         "工作簿生成"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "feishu-doc",
       "path": "skills/feishu-doc",
       "status": "requires-mcp",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "guided-config",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "mcp.feishu.healthy"
+      ],
       "dependencyTypes": [
         "mcp"
       ],
       "dependencies": [
-        {
-          "type": "mcp",
-          "name": "feishu-doc-mcp",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "MCP client lists the declared tools",
-          "silentArgs": null,
-          "restart": "client reload",
-          "license": "user supplied",
-          "source": "user supplied MCP server",
-          "dependentCapabilities": [
-            "飞书文档读写"
-          ]
-        }
+        "mcp.feishu"
       ],
       "dependentCapabilities": [
         "飞书文档读写"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": "仅保留流程说明，MCP 待配置。"
     },
     {
       "id": "feishu-drive",
       "path": "skills/feishu-drive",
       "status": "requires-mcp",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "guided-config",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "mcp.feishu.healthy"
+      ],
       "dependencyTypes": [
         "mcp"
       ],
       "dependencies": [
-        {
-          "type": "mcp",
-          "name": "feishu-drive-mcp",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "MCP client lists the declared tools",
-          "silentArgs": null,
-          "restart": "client reload",
-          "license": "user supplied",
-          "source": "user supplied MCP server",
-          "dependentCapabilities": [
-            "飞书云盘文件管理"
-          ]
-        }
+        "mcp.feishu"
       ],
       "dependentCapabilities": [
         "飞书云盘文件管理"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": "仅保留流程说明，MCP 待配置。"
     },
     {
       "id": "feishu-perm",
       "path": "skills/feishu-perm",
       "status": "requires-mcp",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "guided-config",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "mcp.feishu.healthy"
+      ],
       "dependencyTypes": [
         "mcp"
       ],
       "dependencies": [
-        {
-          "type": "mcp",
-          "name": "feishu-perm-mcp",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "MCP client lists the declared tools",
-          "silentArgs": null,
-          "restart": "client reload",
-          "license": "user supplied",
-          "source": "user supplied MCP server",
-          "dependentCapabilities": [
-            "飞书文件权限"
-          ]
-        }
+        "mcp.feishu"
       ],
       "dependentCapabilities": [
         "飞书文件权限"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": "仅保留流程说明，MCP 待配置。"
     },
     {
       "id": "feishu-wiki",
       "path": "skills/feishu-wiki",
       "status": "requires-mcp",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "guided-config",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "mcp.feishu.healthy"
+      ],
       "dependencyTypes": [
         "mcp"
       ],
       "dependencies": [
-        {
-          "type": "mcp",
-          "name": "feishu-wiki-mcp",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "MCP client lists the declared tools",
-          "silentArgs": null,
-          "restart": "client reload",
-          "license": "user supplied",
-          "source": "user supplied MCP server",
-          "dependentCapabilities": [
-            "飞书知识库导航"
-          ]
-        }
+        "mcp.feishu"
       ],
       "dependentCapabilities": [
         "飞书知识库导航"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": "仅保留流程说明，MCP 待配置。"
     },
     {
       "id": "fitness-coach",
       "path": "skills/fitness-coach",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "训练计划",
-            "动作与周期",
-            "进度记录"
-          ]
-        }
+        "runtime.python312"
       ],
       "dependentCapabilities": [
         "训练计划",
         "动作与周期",
         "进度记录"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "fund-portfolio",
       "path": "skills/fund-portfolio",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "基金筛选",
-            "组合配置",
-            "定投与风险"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "akshare",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "akshare-wheelhouse.zip",
-          "detection": "python -c \"import akshare\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "基金筛选",
-            "组合配置",
-            "定投与风险"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "pandas",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "pandas-wheelhouse.zip",
-          "detection": "python -c \"import pandas\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "基金筛选",
-            "组合配置",
-            "定投与风险"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "numpy",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "numpy-wheelhouse.zip",
-          "detection": "python -c \"import numpy\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "基金筛选",
-            "组合配置",
-            "定投与风险"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "matplotlib",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "matplotlib-wheelhouse.zip",
-          "detection": "python -c \"import matplotlib\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "基金筛选",
-            "组合配置",
-            "定投与风险"
-          ]
-        }
+        "runtime.python312",
+        "python.package.akshare",
+        "python.package.pandas",
+        "python.package.numpy",
+        "python.package.matplotlib"
       ],
       "dependentCapabilities": [
         "基金筛选",
         "组合配置",
         "定投与风险"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "growth-analyst",
       "path": "skills/growth-analyst",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -885,325 +959,189 @@
         "增长复盘",
         "实验迭代"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "healthcheck",
       "path": "skills/healthcheck",
       "status": "unsupported/disabled",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "unsupported",
+      "installByDefault": false,
+      "enableWhen": [
+        "disabled"
+      ],
       "dependencyTypes": [
-        "dependency"
+        "external"
       ],
       "dependencies": [
-        {
-          "type": "dependency",
-          "name": "windows-security-admin-tools",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "manual check",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "verify before use",
-          "source": "user supplied",
-          "dependentCapabilities": [
-            "主机安全检查说明"
-          ]
-        }
+        "external.windows-security-admin-tools"
       ],
       "dependentCapabilities": [
         "主机安全检查说明"
       ],
-      "notes": "不提供特定宿主运行时的诊断命令。"
+      "healthCheck": "negative test: no compatible automatic entry point; must remain disabled",
+      "notes": "保持禁用：主机加固涉及管理员权限、策略和外部设备状态，不能用静态 Skill 冒充审计结果。"
     },
     {
       "id": "image-2",
       "path": "skills/image-2",
       "status": "requires-credential",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "guided-config",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime.python312",
+        "api.image-2",
+        "credential.image-2-api-key"
+      ],
       "dependencyTypes": [
+        "api-service",
         "credential",
-        "runtime",
-        "service"
+        "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "异步文生图",
-            "图生图",
-            "两阶段确认"
-          ]
-        },
-        {
-          "type": "service",
-          "name": "image-2-endpoint",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "endpoint configured by user",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "service provider terms",
-          "source": "user supplied",
-          "dependentCapabilities": [
-            "异步文生图",
-            "图生图",
-            "两阶段确认"
-          ]
-        },
-        {
-          "type": "credential",
-          "name": "IMAGE_2_API_KEY",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "environment variable IMAGE_2_API_KEY is non-empty",
-          "silentArgs": null,
-          "restart": "client reload",
-          "license": "user supplied",
-          "source": "user environment or secret manager",
-          "dependentCapabilities": [
-            "异步文生图",
-            "图生图",
-            "两阶段确认"
-          ]
-        }
+        "runtime.python312",
+        "api.image-2",
+        "credential.image-2-api-key"
       ],
       "dependentCapabilities": [
         "异步文生图",
         "图生图",
         "两阶段确认"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "image-prompt-generator",
       "path": "skills/image-prompt-generator",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
         "结构化图片提示词",
         "信息图与场景设计"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "industry-analysis",
       "path": "skills/industry-analysis",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
         "capability"
       ],
       "dependencies": [
-        {
-          "type": "capability",
-          "name": "native-web-or-user-sources",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "current Codex web tool or user-provided sources",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "current environment",
-          "source": "Codex or user supplied",
-          "dependentCapabilities": [
-            "产业链",
-            "政策与趋势",
-            "竞争格局"
-          ]
-        }
+        "capability.codex-web"
       ],
       "dependentCapabilities": [
         "产业链",
         "政策与趋势",
         "竞争格局"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "macro-research",
       "path": "skills/macro-research",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "周期判断",
-            "政策解读",
-            "资产配置框架"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "pandas",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "pandas-wheelhouse.zip",
-          "detection": "python -c \"import pandas\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "周期判断",
-            "政策解读",
-            "资产配置框架"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "numpy",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "numpy-wheelhouse.zip",
-          "detection": "python -c \"import numpy\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "周期判断",
-            "政策解读",
-            "资产配置框架"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "matplotlib",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "matplotlib-wheelhouse.zip",
-          "detection": "python -c \"import matplotlib\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "周期判断",
-            "政策解读",
-            "资产配置框架"
-          ]
-        }
+        "runtime.python312",
+        "python.package.pandas",
+        "python.package.numpy",
+        "python.package.matplotlib"
       ],
       "dependentCapabilities": [
         "周期判断",
         "政策解读",
         "资产配置框架"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "market-sizing-analysis",
       "path": "skills/market-sizing-analysis",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
         "capability"
       ],
       "dependencies": [
-        {
-          "type": "capability",
-          "name": "native-web-or-user-sources",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "current Codex web tool or user-provided sources",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "current environment",
-          "source": "Codex or user supplied",
-          "dependentCapabilities": [
-            "TAM/SAM/SOM",
-            "市场模型",
-            "口径与假设"
-          ]
-        }
+        "capability.codex-web"
       ],
       "dependentCapabilities": [
         "TAM/SAM/SOM",
         "市场模型",
         "口径与假设"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "meal-planner",
       "path": "skills/meal-planner",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "食谱",
-            "营养分析",
-            "购物清单"
-          ]
-        }
+        "runtime.python312"
       ],
       "dependentCapabilities": [
         "食谱",
         "营养分析",
         "购物清单"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "meeting-secretary",
       "path": "skills/meeting-secretary",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -1211,79 +1149,64 @@
         "决定与行动项",
         "议程"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "multi-search-engine",
       "path": "skills/multi-search-engine",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
         "capability"
       ],
       "dependencies": [
-        {
-          "type": "capability",
-          "name": "native-web-tool-or-user-sources",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "current Codex web tool or user-provided sources",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "current environment",
-          "source": "Codex or user supplied",
-          "dependentCapabilities": [
-            "多来源检索",
-            "查询拆解",
-            "证据交叉验证"
-          ]
-        }
+        "capability.codex-web"
       ],
       "dependentCapabilities": [
         "多来源检索",
         "查询拆解",
         "证据交叉验证"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "node-connect",
       "path": "skills/node-connect",
       "status": "unsupported/disabled",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "unsupported",
+      "installByDefault": false,
+      "enableWhen": [
+        "disabled"
+      ],
       "dependencyTypes": [
-        "dependency"
+        "external"
       ],
       "dependencies": [
-        {
-          "type": "dependency",
-          "name": "device-pairing-runtime",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "manual check",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "verify before use",
-          "source": "user supplied",
-          "dependentCapabilities": [
-            "连接问题排查说明"
-          ]
-        }
+        "external.device-pairing-runtime"
       ],
       "dependentCapabilities": [
         "连接问题排查说明"
       ],
-      "notes": "不提供专用设备配对协议。"
+      "healthCheck": "negative test: no compatible automatic entry point; must remain disabled",
+      "notes": "保持禁用：设备配对协议与节点后端不在本能力包可验证边界内。"
     },
     {
       "id": "offer-designer",
       "path": "skills/offer-designer",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -1291,13 +1214,19 @@
         "Offer 设计",
         "定价与商业模式"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "painpoint-analyzer",
       "path": "skills/painpoint-analyzer",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -1305,318 +1234,151 @@
         "需求分层",
         "机会判断"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "pdf-processing-toolkit",
       "path": "skills/pdf-processing-toolkit",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "PDF 提取",
-            "合并拆分",
-            "表单与生成"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "pypdf",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "pypdf-wheelhouse.zip",
-          "detection": "python -c \"import pypdf\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "PDF 提取",
-            "合并拆分",
-            "表单与生成"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "pdfplumber",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "pdfplumber-wheelhouse.zip",
-          "detection": "python -c \"import pdfplumber\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "PDF 提取",
-            "合并拆分",
-            "表单与生成"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "reportlab",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "reportlab-wheelhouse.zip",
-          "detection": "python -c \"import reportlab\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "PDF 提取",
-            "合并拆分",
-            "表单与生成"
-          ]
-        }
+        "runtime.python312",
+        "python.package.pypdf",
+        "python.package.pdfplumber",
+        "python.package.reportlab"
       ],
       "dependentCapabilities": [
         "PDF 提取",
         "合并拆分",
         "表单与生成"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "powerpoint-pptx",
       "path": "skills/powerpoint-pptx",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
+        "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "PPTX 创建",
-            "版式与图表",
-            "批量处理"
-          ]
-        },
-        {
-          "type": "runtime",
-          "name": "Python package runtime",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "PPTX 创建",
-            "版式与图表",
-            "批量处理"
-          ]
-        }
+        "runtime.python312",
+        "python.package.python-pptx"
       ],
       "dependentCapabilities": [
         "PPTX 创建",
         "版式与图表",
         "批量处理"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "python-env-setup",
       "path": "skills/python-env-setup",
-      "status": "requires-runtime",
-      "defaultEnabled": false,
+      "status": "ready",
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
-        "runtime",
         "system"
       ],
       "dependencies": [
-        {
-          "type": "system",
-          "name": "Windows PowerShell",
-          "minVersion": "Windows 10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "Get-Command curl.exe or Get-Command Invoke-RestMethod",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "Microsoft system component",
-          "source": "Windows 10/11",
-          "dependentCapabilities": [
-            "Python 检测",
-            "安装前检查",
-            "PATH 指引"
-          ]
-        },
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10 optional",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "Python 检测",
-            "安装前检查",
-            "PATH 指引"
-          ]
-        }
+        "system.powershell"
       ],
       "dependentCapabilities": [
         "Python 检测",
         "安装前检查",
         "PATH 指引"
       ],
-      "notes": ""
+      "healthCheck": "missing-Python path returns JSON and non-zero without changing PATH",
+      "notes": "已改为 PowerShell 原生检查器，Python 缺失时仍可运行。"
     },
     {
       "id": "safe-disk-operations",
       "path": "skills/safe-disk-operations",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
         "system"
       ],
       "dependencies": [
-        {
-          "type": "system",
-          "name": "Windows PowerShell",
-          "minVersion": "Windows 10",
-          "architecture": "x64",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "Get-Command curl.exe or Get-Command Invoke-RestMethod",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "Microsoft system component",
-          "source": "Windows 10/11",
-          "dependentCapabilities": [
-            "高风险操作拦截",
-            "删除与迁移安全审查",
-            "财务计算边界"
-          ]
-        }
+        "system.powershell"
       ],
       "dependentCapabilities": [
         "高风险操作拦截",
         "删除与迁移安全审查",
         "财务计算边界"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "seedance2-0-video-gen",
       "path": "skills/seedance2-0-video-gen",
       "status": "requires-credential",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "guided-config",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime.python312",
+        "api.seedance",
+        "credential.seedance-api-key"
+      ],
       "dependencyTypes": [
+        "api-service",
         "credential",
-        "runtime",
-        "service"
+        "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "视频生成",
-            "媒体顺序保护",
-            "幂等提交与轮询"
-          ]
-        },
-        {
-          "type": "service",
-          "name": "seedance-endpoint",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "endpoint configured by user",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "service provider terms",
-          "source": "user supplied",
-          "dependentCapabilities": [
-            "视频生成",
-            "媒体顺序保护",
-            "幂等提交与轮询"
-          ]
-        },
-        {
-          "type": "credential",
-          "name": "SEEDANCE_API_KEY",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "environment variable SEEDANCE_API_KEY is non-empty",
-          "silentArgs": null,
-          "restart": "client reload",
-          "license": "user supplied",
-          "source": "user environment or secret manager",
-          "dependentCapabilities": [
-            "视频生成",
-            "媒体顺序保护",
-            "幂等提交与轮询"
-          ]
-        }
+        "runtime.python312",
+        "api.seedance",
+        "credential.seedance-api-key"
       ],
       "dependentCapabilities": [
         "视频生成",
         "媒体顺序保护",
         "幂等提交与轮询"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "self-improvement-agent",
       "path": "skills/self-improvement-agent",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -1624,46 +1386,38 @@
         "纠正复盘",
         "项目内经验沉淀"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "skills-search",
       "path": "skills/skills-search",
-      "status": "requires-runtime",
-      "defaultEnabled": false,
-      "dependencyTypes": [
-        "runtime"
+      "status": "ready",
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
       ],
-      "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "本地技能目录搜索",
-            "状态与依赖查询"
-          ]
-        }
-      ],
+      "dependencyTypes": [],
+      "dependencies": [],
       "dependentCapabilities": [
         "本地技能目录搜索",
         "状态与依赖查询"
       ],
-      "notes": ""
+      "healthCheck": "local catalog query returns JSON without Python",
+      "notes": "已改为 PowerShell 原生本地目录搜索器。"
     },
     {
       "id": "traffic-hunter",
       "path": "skills/traffic-hunter",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -1671,192 +1425,97 @@
         "内容矩阵",
         "获客系统"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "travel-planner",
       "path": "skills/travel-planner",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "capability",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "行程",
-            "预算",
-            "打包与交通检索"
-          ]
-        },
-        {
-          "type": "capability",
-          "name": "native-web-tool-or-user-sources",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "current Codex web tool or user-provided sources",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "current environment",
-          "source": "Codex or user supplied",
-          "dependentCapabilities": [
-            "行程",
-            "预算",
-            "打包与交通检索"
-          ]
-        }
+        "runtime.python312",
+        "capability.codex-web"
       ],
       "dependentCapabilities": [
         "行程",
         "预算",
         "打包与交通检索"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "user-research",
       "path": "skills/user-research",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
         "capability"
       ],
       "dependencies": [
-        {
-          "type": "capability",
-          "name": "native-web-or-user-sources",
-          "minVersion": null,
-          "architecture": "any",
-          "required": false,
-          "offlineInstallerFilename": null,
-          "detection": "current Codex web tool or user-provided sources",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "current environment",
-          "source": "Codex or user supplied",
-          "dependentCapabilities": [
-            "用户画像",
-            "行为与反馈",
-            "需求验证"
-          ]
-        }
+        "capability.codex-web"
       ],
       "dependentCapabilities": [
         "用户画像",
         "行为与反馈",
         "需求验证"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "venture-analysis",
       "path": "skills/venture-analysis",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "商业计划",
-            "财务模型",
-            "估值与尽调"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "pandas",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "pandas-wheelhouse.zip",
-          "detection": "python -c \"import pandas\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "商业计划",
-            "财务模型",
-            "估值与尽调"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "numpy",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "numpy-wheelhouse.zip",
-          "detection": "python -c \"import numpy\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "商业计划",
-            "财务模型",
-            "估值与尽调"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "matplotlib",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "matplotlib-wheelhouse.zip",
-          "detection": "python -c \"import matplotlib\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "商业计划",
-            "财务模型",
-            "估值与尽调"
-          ]
-        }
+        "runtime.python312",
+        "python.package.pandas",
+        "python.package.numpy",
+        "python.package.matplotlib"
       ],
       "dependentCapabilities": [
         "商业计划",
         "财务模型",
         "估值与尽调"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "video-prompt-generator",
       "path": "skills/video-prompt-generator",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -1864,502 +1523,202 @@
         "分镜",
         "运镜和负面提示"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "wealth-allocation",
       "path": "skills/wealth-allocation",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
         "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "资产配置",
-            "再平衡",
-            "收益追踪"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "pandas",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "pandas-wheelhouse.zip",
-          "detection": "python -c \"import pandas\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "资产配置",
-            "再平衡",
-            "收益追踪"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "numpy",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "numpy-wheelhouse.zip",
-          "detection": "python -c \"import numpy\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "资产配置",
-            "再平衡",
-            "收益追踪"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "matplotlib",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "matplotlib-wheelhouse.zip",
-          "detection": "python -c \"import matplotlib\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "资产配置",
-            "再平衡",
-            "收益追踪"
-          ]
-        }
+        "runtime.python312",
+        "python.package.pandas",
+        "python.package.numpy",
+        "python.package.matplotlib"
       ],
       "dependentCapabilities": [
         "资产配置",
         "再平衡",
         "收益追踪"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "weather",
       "path": "skills/weather",
-      "status": "requires-runtime",
-      "defaultEnabled": false,
+      "status": "ready",
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
-        "system"
+        "capability"
       ],
       "dependencies": [
-        {
-          "type": "system",
-          "name": "curl.exe or Invoke-RestMethod",
-          "minVersion": "Windows 10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "Get-Command curl.exe or Get-Command Invoke-RestMethod",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "Microsoft system component",
-          "source": "Windows 10/11",
-          "dependentCapabilities": [
-            "当前天气",
-            "短期预报"
-          ]
-        },
-        {
-          "type": "system",
-          "name": "network",
-          "minVersion": "Windows 10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "Get-Command curl.exe or Get-Command Invoke-RestMethod",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "Microsoft system component",
-          "source": "Windows 10/11",
-          "dependentCapabilities": [
-            "当前天气",
-            "短期预报"
-          ]
-        }
+        "capability.network"
       ],
       "dependentCapabilities": [
         "当前天气",
         "短期预报"
       ],
+      "healthCheck": "offline branch reports network requirement",
       "notes": ""
     },
     {
       "id": "weather-forecast",
       "path": "skills/weather-forecast",
-      "status": "requires-runtime",
-      "defaultEnabled": false,
+      "status": "ready",
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
-        "runtime",
-        "system"
+        "capability"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "城市偏好",
-            "天气预报",
-            "本地数据"
-          ]
-        },
-        {
-          "type": "system",
-          "name": "curl.exe or Invoke-RestMethod",
-          "minVersion": "Windows 10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "Get-Command curl.exe or Get-Command Invoke-RestMethod",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "Microsoft system component",
-          "source": "Windows 10/11",
-          "dependentCapabilities": [
-            "城市偏好",
-            "天气预报",
-            "本地数据"
-          ]
-        },
-        {
-          "type": "system",
-          "name": "network",
-          "minVersion": "Windows 10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "Get-Command curl.exe or Get-Command Invoke-RestMethod",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "Microsoft system component",
-          "source": "Windows 10/11",
-          "dependentCapabilities": [
-            "城市偏好",
-            "天气预报",
-            "本地数据"
-          ]
-        }
+        "capability.network"
       ],
       "dependentCapabilities": [
         "城市偏好",
         "天气预报",
         "本地数据"
       ],
-      "notes": ""
+      "healthCheck": "set/get city round-trip in isolated WEATHER_DATA_DIR",
+      "notes": "城市偏好已改为 PowerShell JSON 存储，实时天气仍要求网络。"
     },
     {
       "id": "web-content-fetcher",
       "path": "skills/web-content-fetcher",
-      "status": "requires-runtime",
-      "defaultEnabled": false,
+      "status": "ready",
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [
-        "dependency",
-        "python-package",
-        "runtime",
-        "system"
+        "capability",
+        "python-package"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "网页正文提取",
-            "Markdown 清理"
-          ]
-        },
-        {
-          "type": "python-package",
-          "name": "scrapling",
-          "minVersion": "current supported release",
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": "scrapling-wheelhouse.zip",
-          "detection": "python -c \"import scrapling\"",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "package license",
-          "source": "PyPI or approved offline wheelhouse",
-          "dependentCapabilities": [
-            "网页正文提取",
-            "Markdown 清理"
-          ]
-        },
-        {
-          "type": "dependency",
-          "name": "html2text optional",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "manual check",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "verify before use",
-          "source": "user supplied",
-          "dependentCapabilities": [
-            "网页正文提取",
-            "Markdown 清理"
-          ]
-        },
-        {
-          "type": "system",
-          "name": "network",
-          "minVersion": "Windows 10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "Get-Command curl.exe or Get-Command Invoke-RestMethod",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "Microsoft system component",
-          "source": "Windows 10/11",
-          "dependentCapabilities": [
-            "网页正文提取",
-            "Markdown 清理"
-          ]
-        }
+        "capability.codex-web",
+        "python.package.scrapling",
+        "python.package.html2text"
       ],
       "dependentCapabilities": [
         "网页正文提取",
         "Markdown 清理"
       ],
-      "notes": ""
+      "healthCheck": "native path is documented and optional adapter missing-dependency failure is explicit",
+      "notes": "Codex 原生网页读取为核心路径；Scrapling/html2text 仅作批处理增强。"
     },
     {
       "id": "web-search-extraction",
       "path": "skills/web-search-extraction",
       "status": "requires-credential",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "guided-config",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "credential.dashscope-api-key",
+        "connection.dashscope-base-url",
+        "capability.network"
+      ],
       "dependencyTypes": [
+        "capability",
+        "connection",
         "credential",
-        "runtime",
-        "system"
+        "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "联网搜索适配",
-            "结构化摘要"
-          ]
-        },
-        {
-          "type": "credential",
-          "name": "DASHSCOPE_API_KEY",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "environment variable DASHSCOPE_API_KEY is non-empty",
-          "silentArgs": null,
-          "restart": "client reload",
-          "license": "user supplied",
-          "source": "user environment or secret manager",
-          "dependentCapabilities": [
-            "联网搜索适配",
-            "结构化摘要"
-          ]
-        },
-        {
-          "type": "credential",
-          "name": "DASHSCOPE_BASE_URL",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "environment variable DASHSCOPE_BASE_URL is non-empty",
-          "silentArgs": null,
-          "restart": "client reload",
-          "license": "user supplied",
-          "source": "user environment or secret manager",
-          "dependentCapabilities": [
-            "联网搜索适配",
-            "结构化摘要"
-          ]
-        },
-        {
-          "type": "system",
-          "name": "network",
-          "minVersion": "Windows 10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "Get-Command curl.exe or Get-Command Invoke-RestMethod",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "Microsoft system component",
-          "source": "Windows 10/11",
-          "dependentCapabilities": [
-            "联网搜索适配",
-            "结构化摘要"
-          ]
-        }
+        "runtime.python312",
+        "credential.dashscope-api-key",
+        "connection.dashscope-base-url",
+        "capability.network"
       ],
       "dependentCapabilities": [
         "联网搜索适配",
         "结构化摘要"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": "Codex 原生联网工具可用时优先使用原生工具。"
     },
     {
       "id": "wechat-article-creator",
       "path": "skills/wechat-article-creator",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
-        "runtime",
-        "service"
+        "api-service",
+        "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "公众号选题",
-            "文章结构",
-            "标题与封面"
-          ]
-        },
-        {
-          "type": "service",
-          "name": "optional image endpoint",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "endpoint configured by user",
-          "silentArgs": null,
-          "restart": "none",
-          "license": "service provider terms",
-          "source": "user supplied",
-          "dependentCapabilities": [
-            "公众号选题",
-            "文章结构",
-            "标题与封面"
-          ]
-        }
+        "runtime.python312",
+        "api.image-2"
       ],
       "dependentCapabilities": [
         "公众号选题",
         "文章结构",
         "标题与封面"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "word-docx",
       "path": "skills/word-docx",
       "status": "requires-runtime",
-      "defaultEnabled": false,
+      "afterRemediationStatus": "auto-installable-runtime",
+      "installByDefault": false,
+      "enableWhen": [
+        "skill-installed",
+        "runtime-healthy"
+      ],
       "dependencyTypes": [
+        "python-package",
         "runtime"
       ],
       "dependencies": [
-        {
-          "type": "runtime",
-          "name": "Python",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version or py -3 --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "Word 读写",
-            "样式与页眉页脚"
-          ]
-        },
-        {
-          "type": "runtime",
-          "name": "Python package runtime",
-          "minVersion": "3.10",
-          "architecture": "x64",
-          "required": true,
-          "offlineInstallerFilename": "python-3.x.x-amd64.exe",
-          "detection": "python --version",
-          "silentArgs": "/quiet InstallAllUsers=0 PrependPath=1",
-          "restart": "recommended",
-          "license": "PSF License",
-          "source": "https://www.python.org/downloads/windows/",
-          "dependentCapabilities": [
-            "Word 读写",
-            "样式与页眉页脚"
-          ]
-        }
+        "runtime.python312",
+        "python.package.python-docx"
       ],
       "dependentCapabilities": [
         "Word 读写",
         "样式与页眉页脚"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     },
     {
       "id": "xiaohongshu-writing",
       "path": "skills/xiaohongshu-writing",
       "status": "ready",
-      "defaultEnabled": true,
+      "afterRemediationStatus": "core-ready",
+      "installByDefault": true,
+      "enableWhen": [
+        "skill-installed",
+        "required-capabilities-available"
+      ],
       "dependencyTypes": [],
       "dependencies": [],
       "dependentCapabilities": [
@@ -2367,6 +1726,7 @@
         "笔记结构",
         "去模板化检查"
       ],
+      "healthCheck": "frontmatter, pack-copy, and dependency health-check path",
       "notes": ""
     }
   ],
@@ -2376,168 +1736,142 @@
       "file": "agents/general.toml",
       "name": "全能官",
       "description": "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。",
-      "status": "requires-runtime",
-      "defaultEnabled": true,
+      "status": "auto-installable-runtime",
+      "readiness": {
+        "minimum": "core-ready",
+        "fallback": "没有 Python 时先完成文字、研究框架和提示词；没有联网服务时只使用用户材料。"
+      },
+      "requiredSkills": [
+        "multi-search-engine",
+        "image-prompt-generator",
+        "video-prompt-generator"
+      ],
+      "optionalSkills": [
+        "web-search-extraction",
+        "data-assistant",
+        "docx-butler",
+        "excel-xlsx",
+        "word-docx",
+        "pdf-processing-toolkit",
+        "powerpoint-pptx"
+      ],
+      "connectionDependencies": [
+        "api.dashscope-web-search"
+      ],
+      "runtimeDependencies": [
+        "runtime.python312",
+        "runtime.python312-wheelhouse"
+      ],
       "dependencyTypes": [
         "skill"
       ],
       "dependencies": [
         {
-          "type": "skill",
-          "name": "web-search-extraction",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/web-search-extraction/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
-          ]
-        },
-        {
-          "type": "skill",
+          "id": "skill.multi-search-engine",
+          "kind": "skill",
           "name": "multi-search-engine",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/multi-search-engine/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/multi-search-engine/SKILL.md exists",
           "dependentCapabilities": [
             "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
           ]
         },
         {
-          "type": "skill",
-          "name": "data-assistant",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/data-assistant/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
-          ]
-        },
-        {
-          "type": "skill",
-          "name": "docx-butler",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/docx-butler/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
-          ]
-        },
-        {
-          "type": "skill",
-          "name": "excel-xlsx",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/excel-xlsx/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
-          ]
-        },
-        {
-          "type": "skill",
-          "name": "word-docx",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/word-docx/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
-          ]
-        },
-        {
-          "type": "skill",
-          "name": "pdf-processing-toolkit",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/pdf-processing-toolkit/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
-          ]
-        },
-        {
-          "type": "skill",
-          "name": "powerpoint-pptx",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/powerpoint-pptx/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
-          ]
-        },
-        {
-          "type": "skill",
+          "id": "skill.image-prompt-generator",
+          "kind": "skill",
           "name": "image-prompt-generator",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/image-prompt-generator/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/image-prompt-generator/SKILL.md exists",
           "dependentCapabilities": [
             "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.video-prompt-generator",
+          "kind": "skill",
           "name": "video-prompt-generator",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/video-prompt-generator/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/video-prompt-generator/SKILL.md exists",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
+        },
+        {
+          "id": "skill.web-search-extraction",
+          "kind": "skill",
+          "name": "web-search-extraction",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/web-search-extraction/SKILL.md exists",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
+        },
+        {
+          "id": "skill.data-assistant",
+          "kind": "skill",
+          "name": "data-assistant",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/data-assistant/SKILL.md exists",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
+        },
+        {
+          "id": "skill.docx-butler",
+          "kind": "skill",
+          "name": "docx-butler",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/docx-butler/SKILL.md exists",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
+        },
+        {
+          "id": "skill.excel-xlsx",
+          "kind": "skill",
+          "name": "excel-xlsx",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/excel-xlsx/SKILL.md exists",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
+        },
+        {
+          "id": "skill.word-docx",
+          "kind": "skill",
+          "name": "word-docx",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/word-docx/SKILL.md exists",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
+        },
+        {
+          "id": "skill.pdf-processing-toolkit",
+          "kind": "skill",
+          "name": "pdf-processing-toolkit",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/pdf-processing-toolkit/SKILL.md exists",
+          "dependentCapabilities": [
+            "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
+          ]
+        },
+        {
+          "id": "skill.powerpoint-pptx",
+          "kind": "skill",
+          "name": "powerpoint-pptx",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/powerpoint-pptx/SKILL.md exists",
           "dependentCapabilities": [
             "综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。"
           ]
@@ -2552,120 +1886,103 @@
       "file": "agents/research.toml",
       "name": "研究官",
       "description": "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。",
-      "status": "requires-credential",
-      "defaultEnabled": true,
+      "status": "guided-config",
+      "readiness": {
+        "minimum": "core-ready",
+        "fallback": "没有联网连接时只基于用户提供的论文、链接和数据，并标注无法实时核验。"
+      },
+      "requiredSkills": [
+        "academic-research",
+        "competitor-intelligence",
+        "industry-analysis",
+        "user-research",
+        "market-sizing-analysis",
+        "multi-search-engine"
+      ],
+      "optionalSkills": [
+        "web-search-extraction"
+      ],
+      "connectionDependencies": [
+        "api.dashscope-web-search"
+      ],
+      "runtimeDependencies": [],
       "dependencyTypes": [
         "skill"
       ],
       "dependencies": [
         {
-          "type": "skill",
+          "id": "skill.academic-research",
+          "kind": "skill",
           "name": "academic-research",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/academic-research/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/academic-research/SKILL.md exists",
           "dependentCapabilities": [
             "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.competitor-intelligence",
+          "kind": "skill",
           "name": "competitor-intelligence",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/competitor-intelligence/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/competitor-intelligence/SKILL.md exists",
           "dependentCapabilities": [
             "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.industry-analysis",
+          "kind": "skill",
           "name": "industry-analysis",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/industry-analysis/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/industry-analysis/SKILL.md exists",
           "dependentCapabilities": [
             "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.user-research",
+          "kind": "skill",
           "name": "user-research",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/user-research/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/user-research/SKILL.md exists",
           "dependentCapabilities": [
             "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.market-sizing-analysis",
+          "kind": "skill",
           "name": "market-sizing-analysis",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/market-sizing-analysis/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/market-sizing-analysis/SKILL.md exists",
           "dependentCapabilities": [
             "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.multi-search-engine",
+          "kind": "skill",
           "name": "multi-search-engine",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/multi-search-engine/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/multi-search-engine/SKILL.md exists",
           "dependentCapabilities": [
             "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.web-search-extraction",
+          "kind": "skill",
           "name": "web-search-extraction",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/web-search-extraction/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/web-search-extraction/SKILL.md exists",
           "dependentCapabilities": [
             "深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。"
           ]
@@ -2679,96 +1996,116 @@
       "id": "content",
       "file": "agents/content.toml",
       "name": "创作官",
-      "description": "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词和视频脚本。",
-      "status": "requires-credential",
-      "defaultEnabled": true,
+      "description": "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。",
+      "status": "guided-config",
+      "readiness": {
+        "minimum": "core-ready",
+        "fallback": "没有图像/视频服务时输出可直接交给外部生成器的提示词和分镜，不伪造生成结果。"
+      },
+      "requiredSkills": [
+        "xiaohongshu-writing",
+        "image-prompt-generator",
+        "video-prompt-generator"
+      ],
+      "optionalSkills": [
+        "wechat-article-creator",
+        "web-search-extraction",
+        "image-2",
+        "seedance2-0-video-gen"
+      ],
+      "connectionDependencies": [
+        "api.dashscope-web-search",
+        "api.image-2",
+        "api.seedance"
+      ],
+      "runtimeDependencies": [
+        "runtime.python312",
+        "runtime.python312-wheelhouse"
+      ],
       "dependencyTypes": [
         "skill"
       ],
       "dependencies": [
         {
-          "type": "skill",
-          "name": "wechat-article-creator",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/wechat-article-creator/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词和视频脚本。"
-          ]
-        },
-        {
-          "type": "skill",
+          "id": "skill.xiaohongshu-writing",
+          "kind": "skill",
           "name": "xiaohongshu-writing",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/xiaohongshu-writing/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/xiaohongshu-writing/SKILL.md exists",
           "dependentCapabilities": [
-            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词和视频脚本。"
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.image-prompt-generator",
+          "kind": "skill",
           "name": "image-prompt-generator",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/image-prompt-generator/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/image-prompt-generator/SKILL.md exists",
           "dependentCapabilities": [
-            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词和视频脚本。"
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.video-prompt-generator",
+          "kind": "skill",
           "name": "video-prompt-generator",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/video-prompt-generator/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/video-prompt-generator/SKILL.md exists",
           "dependentCapabilities": [
-            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词和视频脚本。"
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
           ]
         },
         {
-          "type": "skill",
-          "name": "web-search-extraction",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/web-search-extraction/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "id": "skill.wechat-article-creator",
+          "kind": "skill",
+          "name": "wechat-article-creator",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/wechat-article-creator/SKILL.md exists",
           "dependentCapabilities": [
-            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词和视频脚本。"
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
+          ]
+        },
+        {
+          "id": "skill.web-search-extraction",
+          "kind": "skill",
+          "name": "web-search-extraction",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/web-search-extraction/SKILL.md exists",
+          "dependentCapabilities": [
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
+          ]
+        },
+        {
+          "id": "skill.image-2",
+          "kind": "skill",
+          "name": "image-2",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/image-2/SKILL.md exists",
+          "dependentCapabilities": [
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
+          ]
+        },
+        {
+          "id": "skill.seedance2-0-video-gen",
+          "kind": "skill",
+          "name": "seedance2-0-video-gen",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/seedance2-0-video-gen/SKILL.md exists",
+          "dependentCapabilities": [
+            "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
           ]
         }
       ],
       "dependentCapabilities": [
-        "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词和视频脚本。"
+        "新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词、视频提示词和脚本。"
       ]
     },
     {
@@ -2776,104 +2113,94 @@
       "file": "agents/investment.toml",
       "name": "投资官",
       "description": "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。",
-      "status": "requires-runtime",
-      "defaultEnabled": true,
+      "status": "auto-installable-runtime",
+      "readiness": {
+        "minimum": "auto-installable-runtime",
+        "fallback": "没有行情包或联网数据时只提供分析框架和风险清单，不输出虚构的实时价格、财务数据或收益承诺。"
+      },
+      "requiredSkills": [
+        "china-stock-analysis",
+        "fund-portfolio",
+        "macro-research",
+        "venture-analysis",
+        "wealth-allocation"
+      ],
+      "optionalSkills": [
+        "web-search-extraction"
+      ],
+      "connectionDependencies": [
+        "api.dashscope-web-search"
+      ],
+      "runtimeDependencies": [
+        "runtime.python312",
+        "runtime.python312-wheelhouse"
+      ],
       "dependencyTypes": [
         "skill"
       ],
       "dependencies": [
         {
-          "type": "skill",
+          "id": "skill.china-stock-analysis",
+          "kind": "skill",
           "name": "china-stock-analysis",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/china-stock-analysis/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/china-stock-analysis/SKILL.md exists",
           "dependentCapabilities": [
             "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.fund-portfolio",
+          "kind": "skill",
           "name": "fund-portfolio",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/fund-portfolio/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/fund-portfolio/SKILL.md exists",
           "dependentCapabilities": [
             "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.macro-research",
+          "kind": "skill",
           "name": "macro-research",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/macro-research/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/macro-research/SKILL.md exists",
           "dependentCapabilities": [
             "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.venture-analysis",
+          "kind": "skill",
           "name": "venture-analysis",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/venture-analysis/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/venture-analysis/SKILL.md exists",
           "dependentCapabilities": [
             "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.wealth-allocation",
+          "kind": "skill",
           "name": "wealth-allocation",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/wealth-allocation/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/wealth-allocation/SKILL.md exists",
           "dependentCapabilities": [
             "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.web-search-extraction",
+          "kind": "skill",
           "name": "web-search-extraction",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/web-search-extraction/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/web-search-extraction/SKILL.md exists",
           "dependentCapabilities": [
             "投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。"
           ]
@@ -2888,104 +2215,91 @@
       "file": "agents/growth.toml",
       "name": "增长官",
       "description": "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。",
-      "status": "requires-credential",
-      "defaultEnabled": true,
+      "status": "guided-config",
+      "readiness": {
+        "minimum": "core-ready",
+        "fallback": "没有外部研究数据时先用用户提供的业务数据，所有市场数字和增长判断都标明假设。"
+      },
+      "requiredSkills": [
+        "painpoint-analyzer",
+        "offer-designer",
+        "traffic-hunter",
+        "conversion-optimizer",
+        "growth-analyst"
+      ],
+      "optionalSkills": [
+        "web-search-extraction"
+      ],
+      "connectionDependencies": [
+        "api.dashscope-web-search"
+      ],
+      "runtimeDependencies": [],
       "dependencyTypes": [
         "skill"
       ],
       "dependencies": [
         {
-          "type": "skill",
+          "id": "skill.painpoint-analyzer",
+          "kind": "skill",
           "name": "painpoint-analyzer",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/painpoint-analyzer/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/painpoint-analyzer/SKILL.md exists",
           "dependentCapabilities": [
             "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.offer-designer",
+          "kind": "skill",
           "name": "offer-designer",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/offer-designer/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/offer-designer/SKILL.md exists",
           "dependentCapabilities": [
             "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.traffic-hunter",
+          "kind": "skill",
           "name": "traffic-hunter",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/traffic-hunter/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/traffic-hunter/SKILL.md exists",
           "dependentCapabilities": [
             "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.conversion-optimizer",
+          "kind": "skill",
           "name": "conversion-optimizer",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/conversion-optimizer/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/conversion-optimizer/SKILL.md exists",
           "dependentCapabilities": [
             "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.growth-analyst",
+          "kind": "skill",
           "name": "growth-analyst",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/growth-analyst/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/growth-analyst/SKILL.md exists",
           "dependentCapabilities": [
             "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.web-search-extraction",
+          "kind": "skill",
           "name": "web-search-extraction",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/web-search-extraction/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/web-search-extraction/SKILL.md exists",
           "dependentCapabilities": [
             "商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。"
           ]
@@ -3000,120 +2314,118 @@
       "file": "agents/lifestyle.toml",
       "name": "生活官",
       "description": "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。",
-      "status": "requires-runtime",
-      "defaultEnabled": true,
+      "status": "auto-installable-runtime",
+      "readiness": {
+        "minimum": "core-ready",
+        "fallback": "没有 Python 时保留计划、清单和复盘文本；没有实时网络时不声称天气、交通或价格已核验；健康建议不替代医生。"
+      },
+      "requiredSkills": [
+        "daily-reflection",
+        "weather-forecast",
+        "weather"
+      ],
+      "optionalSkills": [
+        "fitness-coach",
+        "meal-planner",
+        "travel-planner",
+        "multi-search-engine",
+        "web-search-extraction"
+      ],
+      "connectionDependencies": [
+        "api.dashscope-web-search"
+      ],
+      "runtimeDependencies": [
+        "runtime.python312",
+        "runtime.python312-wheelhouse"
+      ],
       "dependencyTypes": [
         "skill"
       ],
       "dependencies": [
         {
-          "type": "skill",
-          "name": "fitness-coach",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/fitness-coach/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
-          ]
-        },
-        {
-          "type": "skill",
-          "name": "meal-planner",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/meal-planner/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
-          ]
-        },
-        {
-          "type": "skill",
-          "name": "travel-planner",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/travel-planner/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
-          ]
-        },
-        {
-          "type": "skill",
+          "id": "skill.daily-reflection",
+          "kind": "skill",
           "name": "daily-reflection",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/daily-reflection/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/daily-reflection/SKILL.md exists",
           "dependentCapabilities": [
             "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.weather-forecast",
+          "kind": "skill",
           "name": "weather-forecast",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/weather-forecast/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/weather-forecast/SKILL.md exists",
           "dependentCapabilities": [
             "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.weather",
+          "kind": "skill",
+          "name": "weather",
+          "required": true,
+          "autoInstallable": true,
+          "healthCheck": "skills/weather/SKILL.md exists",
+          "dependentCapabilities": [
+            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
+          ]
+        },
+        {
+          "id": "skill.fitness-coach",
+          "kind": "skill",
+          "name": "fitness-coach",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/fitness-coach/SKILL.md exists",
+          "dependentCapabilities": [
+            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
+          ]
+        },
+        {
+          "id": "skill.meal-planner",
+          "kind": "skill",
+          "name": "meal-planner",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/meal-planner/SKILL.md exists",
+          "dependentCapabilities": [
+            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
+          ]
+        },
+        {
+          "id": "skill.travel-planner",
+          "kind": "skill",
+          "name": "travel-planner",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/travel-planner/SKILL.md exists",
+          "dependentCapabilities": [
+            "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
+          ]
+        },
+        {
+          "id": "skill.multi-search-engine",
+          "kind": "skill",
           "name": "multi-search-engine",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/multi-search-engine/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/multi-search-engine/SKILL.md exists",
           "dependentCapabilities": [
             "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.web-search-extraction",
+          "kind": "skill",
           "name": "web-search-extraction",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/web-search-extraction/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/web-search-extraction/SKILL.md exists",
           "dependentCapabilities": [
             "健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。"
           ]
@@ -3127,160 +2439,136 @@
       "id": "office",
       "file": "agents/office.toml",
       "name": "办公官",
-      "description": "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。",
-      "status": "requires-runtime",
-      "defaultEnabled": true,
+      "description": "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。",
+      "status": "auto-installable-runtime",
+      "readiness": {
+        "minimum": "core-ready",
+        "fallback": "没有文件运行时就输出结构化文本、表格设计和操作步骤，不声称文件已生成或已修改。"
+      },
+      "requiredSkills": [
+        "efficiency-toolkit",
+        "email-expert",
+        "meeting-secretary"
+      ],
+      "optionalSkills": [
+        "data-assistant",
+        "docx-butler",
+        "excel-xlsx",
+        "word-docx",
+        "powerpoint-pptx",
+        "pdf-processing-toolkit"
+      ],
+      "connectionDependencies": [],
+      "runtimeDependencies": [
+        "runtime.python312",
+        "runtime.python312-wheelhouse"
+      ],
       "dependencyTypes": [
         "skill"
       ],
       "dependencies": [
         {
-          "type": "skill",
-          "name": "data-assistant",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/data-assistant/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
-          ]
-        },
-        {
-          "type": "skill",
-          "name": "docx-butler",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/docx-butler/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
-          "dependentCapabilities": [
-            "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
-          ]
-        },
-        {
-          "type": "skill",
+          "id": "skill.efficiency-toolkit",
+          "kind": "skill",
           "name": "efficiency-toolkit",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/efficiency-toolkit/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/efficiency-toolkit/SKILL.md exists",
           "dependentCapabilities": [
-            "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.email-expert",
+          "kind": "skill",
           "name": "email-expert",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/email-expert/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/email-expert/SKILL.md exists",
           "dependentCapabilities": [
-            "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.meeting-secretary",
+          "kind": "skill",
           "name": "meeting-secretary",
-          "minVersion": null,
-          "architecture": "any",
           "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/meeting-secretary/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "autoInstallable": true,
+          "healthCheck": "skills/meeting-secretary/SKILL.md exists",
           "dependentCapabilities": [
-            "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.data-assistant",
+          "kind": "skill",
+          "name": "data-assistant",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/data-assistant/SKILL.md exists",
+          "dependentCapabilities": [
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
+          ]
+        },
+        {
+          "id": "skill.docx-butler",
+          "kind": "skill",
+          "name": "docx-butler",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/docx-butler/SKILL.md exists",
+          "dependentCapabilities": [
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
+          ]
+        },
+        {
+          "id": "skill.excel-xlsx",
+          "kind": "skill",
           "name": "excel-xlsx",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/excel-xlsx/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/excel-xlsx/SKILL.md exists",
           "dependentCapabilities": [
-            "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.word-docx",
+          "kind": "skill",
           "name": "word-docx",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/word-docx/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/word-docx/SKILL.md exists",
           "dependentCapabilities": [
-            "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.powerpoint-pptx",
+          "kind": "skill",
           "name": "powerpoint-pptx",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/powerpoint-pptx/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/powerpoint-pptx/SKILL.md exists",
           "dependentCapabilities": [
-            "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
           ]
         },
         {
-          "type": "skill",
+          "id": "skill.pdf-processing-toolkit",
+          "kind": "skill",
           "name": "pdf-processing-toolkit",
-          "minVersion": null,
-          "architecture": "any",
-          "required": true,
-          "offlineInstallerFilename": null,
-          "detection": "skills/pdf-processing-toolkit/SKILL.md exists",
-          "silentArgs": null,
-          "restart": "Codex reload",
-          "license": "package license",
-          "source": "this pack",
+          "required": false,
+          "autoInstallable": true,
+          "healthCheck": "skills/pdf-processing-toolkit/SKILL.md exists",
           "dependentCapabilities": [
-            "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
+            "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
           ]
         }
       ],
       "dependentCapabilities": [
-        "职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。"
+        "职场效率与交付管家，覆盖文档、数据、邮件、会议、表格和文件整理。"
       ]
     }
   ]

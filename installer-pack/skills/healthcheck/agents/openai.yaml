@@ -1,0 +1,5 @@
+interface:
+  display_name: "主机安全检查"
+  short_description: "输出主机安全审计清单；不会伪造当前主机状态。"
+policy:
+  allow_implicit_invocation: false

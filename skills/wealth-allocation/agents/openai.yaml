@@ -1,0 +1,5 @@
+interface:
+  display_name: "资产配置"
+  short_description: "设计家庭资产配置、再平衡和收益追踪方案。"
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,5 @@
+interface:
+  display_name: "PDF 处理"
+  short_description: "提取、整理、创建和检查 PDF 文档与表格。"
+policy:
+  allow_implicit_invocation: false

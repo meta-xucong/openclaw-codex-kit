@@ -21,6 +21,15 @@
 *.sqlite
 *.sqlite3
 
+# Offline runtime media is supplied separately from the public starter kit
+runtime/wheelhouse/
+runtime/*.whl
+runtime/*.zip
+runtime/*.exe
+runtime/*.msi
+codex-data/
+.verify-smoke-*/
+
 # Local deployment output
 .codex/
 dist/

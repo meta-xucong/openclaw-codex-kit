@@ -1,0 +1,5 @@
+interface:
+  display_name: "数据处理"
+  short_description: "清洗表格、提取 PDF 信息并生成数据分析结果。"
+policy:
+  allow_implicit_invocation: false

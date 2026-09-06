@@ -1,0 +1,5 @@
+interface:
+  display_name: "A股分析"
+  short_description: "使用可核验行情和财务数据进行 A 股分析。"
+policy:
+  allow_implicit_invocation: false

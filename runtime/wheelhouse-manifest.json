@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "platform": "win_amd64",
+  "python": "cp312",
+  "lockFile": "runtime/requirements-python-win-x64-py312.lock",
+  "materializeCommand": "python -m pip download --only-binary=:all: --platform win_amd64 --python-version 312 --implementation cp --abi cp312 --dest wheelhouse -r runtime/requirements-python-win-x64-py312.lock",
+  "policy": "Do not ship this starter kit with wheel binaries. The installer repository materializes the complete transitive closure, records every file hash, and signs the media manifest.",
+  "directWheels": [
+    {"package":"akshare","version":"1.18.94","filename":"akshare-1.18.94-py3-none-any.whl","sha256":"a66901c646865781da353d294dbab9ac760955e00e5c761ff5028583431c6771","bytes":1260826},
+    {"package":"pandas","version":"3.0.5","filename":"pandas-3.0.5-cp312-cp312-win_amd64.whl","sha256":"80a611068e8a3ac23f7398c6c14eb46dc974e5cc9997f653e2dcfd1da74edd41","bytes":9831691},
+    {"package":"numpy","version":"2.5.2","filename":"numpy-2.5.2-cp312-cp312-win_amd64.whl","sha256":"28ac63476ec7651484215ee7fa15a1f78b57c14621f01e392afe17b9a1390ce4","bytes":12464674},
+    {"package":"matplotlib","version":"3.11.1","filename":"matplotlib-3.11.1-cp312-cp312-win_amd64.whl","sha256":"88a2a27dd9691ae448dfae4b26f59036be90c3c28757edd3553a29559d00859f","bytes":9333886},
+    {"package":"openpyxl","version":"3.1.5","filename":"openpyxl-3.1.5-py2.py3-none-any.whl","sha256":"5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2","bytes":250910},
+    {"package":"python-docx","version":"1.2.0","filename":"python_docx-1.2.0-py3-none-any.whl","sha256":"3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7","bytes":252987},
+    {"package":"python-pptx","version":"1.0.2","filename":"python_pptx-1.0.2-py3-none-any.whl","sha256":"160838e0b8565a8b1f67947675886e9fea18aa5e795db7ae531606d68e785cba","bytes":472788},
+    {"package":"pypdf","version":"6.17.0","filename":"pypdf-6.17.0-py3-none-any.whl","sha256":"5bd827266a21553b74d910e350131a6227b72f2ab4209bf372814b8195fa11c5","bytes":388051},
+    {"package":"pdfplumber","version":"0.11.10","filename":"pdfplumber-0.11.10-py3-none-any.whl","sha256":"7741ea81bf165b474b153e6789d10d18e06b6ddcf3ec84289c3ef2fed6802580","bytes":60047},
+    {"package":"reportlab","version":"5.0.1","filename":"reportlab-5.0.1-py3-none-any.whl","sha256":"1c36e6bb0e71780c72331eba60da7f602e8d4389a8723825af71342e49d791e8","bytes":1957258},
+    {"package":"Pillow","version":"12.3.0","filename":"pillow-12.3.0-cp312-cp312-win_amd64.whl","sha256":"a2b55dd6b2a4c4b7d87ffa56bdb33fdc5fdb9a462173861a7bc097f17d91cb09","bytes":7227137},
+    {"package":"scrapling","version":"0.4.15","filename":"scrapling-0.4.15-py3-none-any.whl","sha256":"ae66bde9f63afb793ad6f93bd76b451e29f1631347465a553c4e7765c0ecc1f2","bytes":180463},
+    {"package":"html2text","version":"2025.4.15","filename":"html2text-2025.4.15-py3-none-any.whl","sha256":"00569167ffdab3d7767a4cdf589b7f57e777a5ed28d12907d8c58769ec734acc","bytes":34656}
+  ],
+  "transitiveClosure": {"required": true, "mustBeGeneratedByInstaller": true, "verification": "pip --require-hashes plus per-file SHA-256 manifest"}
+}

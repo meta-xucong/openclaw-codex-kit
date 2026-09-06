@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 2,
+  "fields": [
+    {
+      "id": "feishu.app-id",
+      "serviceId": "feishu",
+      "label": "飞书 App ID",
+      "type": "text",
+      "required": true,
+      "secret": false,
+      "defaultUrl": "",
+      "validation": {
+        "regex": "^cli_[A-Za-z0-9_-]+$"
+      },
+      "help": "从飞书开放平台自建应用复制 App ID；只保存在本机连接配置。",
+      "capabilities": [
+        "mcp.feishu"
+      ]
+    },
+    {
+      "id": "feishu.app-secret",
+      "serviceId": "feishu",
+      "label": "飞书 App Secret",
+      "type": "secret",
+      "required": true,
+      "secret": true,
+      "defaultUrl": "",
+      "validation": {
+        "minLength": 8
+      },
+      "help": "不要写入仓库、日志或安装记录。",
+      "capabilities": [
+        "mcp.feishu"
+      ]
+    },
+    {
+      "id": "feishu.base-url",
+      "serviceId": "feishu",
+      "label": "飞书 API 地址",
+      "type": "url",
+      "required": false,
+      "secret": false,
+      "defaultUrl": "https://open.feishu.cn",
+      "validation": {
+        "scheme": "https",
+        "hostAllowlist": [
+          "open.feishu.cn",
+          "open.larksuite.com"
+        ]
+      },
+      "help": "中国版默认 open.feishu.cn；国际版可选择 open.larksuite.com。",
+      "capabilities": [
+        "mcp.feishu"
+      ]
+    },
+    {
+      "id": "feishu.auth-mode",
+      "serviceId": "feishu",
+      "label": "认证方式",
+      "type": "select",
+      "required": false,
+      "secret": false,
+      "defaultUrl": "",
+      "validation": {
+        "choices": [
+          "tenant",
+          "user",
+          "oauth"
+        ]
+      },
+      "help": "按实际权限选择；用户级读写需在飞书应用侧完成 OAuth/权限配置。",
+      "capabilities": [
+        "mcp.feishu"
+      ]
+    },
+    {
+      "id": "dashscope.api-key",
+      "serviceId": "dashscope-web-search",
+      "label": "DashScope API Key",
+      "type": "secret",
+      "required": true,
+      "secret": true,
+      "defaultUrl": "",
+      "validation": {
+        "minLength": 20
+      },
+      "help": "只放本机环境变量或私密凭据存储。",
+      "capabilities": [
+        "api.dashscope-web-search"
+      ]
+    },
+    {
+      "id": "dashscope.base-url",
+      "serviceId": "dashscope-web-search",
+      "label": "DashScope Base URL",
+      "type": "url",
+      "required": true,
+      "secret": false,
+      "defaultUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "validation": {
+        "scheme": "https",
+        "pathSuffix": "/compatible-mode/v1"
+      },
+      "help": "兼容 OpenAI chat/completions 的服务地址。",
+      "capabilities": [
+        "api.dashscope-web-search"
+      ]
+    },
+    {
+      "id": "image-2.api-key",
+      "serviceId": "image-2",
+      "label": "图像服务 API Key",
+      "type": "secret",
+      "required": true,
+      "secret": true,
+      "defaultUrl": "",
+      "validation": {
+        "minLength": 20
+      },
+      "help": "生成/编辑可能产生费用，提交前必须再次确认。",
+      "capabilities": [
+        "api.image-2"
+      ]
+    },
+    {
+      "id": "image-2.base-url",
+      "serviceId": "image-2",
+      "label": "图像服务 Base URL",
+      "type": "url",
+      "required": true,
+      "secret": false,
+      "defaultUrl": "",
+      "validation": {
+        "scheme": "https"
+      },
+      "help": "由服务提供方给出；Starter Kit 不猜测供应商端点。",
+      "capabilities": [
+        "api.image-2"
+      ]
+    },
+    {
+      "id": "seedance.api-key",
+      "serviceId": "seedance",
+      "label": "视频服务 API Key",
+      "type": "secret",
+      "required": true,
+      "secret": true,
+      "defaultUrl": "",
+      "validation": {
+        "minLength": 20
+      },
+      "help": "视频任务可能产生费用，提交前必须确认素材、参数和费用。",
+      "capabilities": [
+        "api.seedance"
+      ]
+    },
+    {
+      "id": "seedance.base-url",
+      "serviceId": "seedance",
+      "label": "视频服务 Base URL",
+      "type": "url",
+      "required": true,
+      "secret": false,
+      "defaultUrl": "",
+      "validation": {
+        "scheme": "https"
+      },
+      "help": "由服务提供方给出；Starter Kit 不猜测供应商端点。",
+      "capabilities": [
+        "api.seedance"
+      ]
+    }
+  ]
+}

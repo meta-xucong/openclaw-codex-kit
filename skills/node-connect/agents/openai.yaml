@@ -1,0 +1,5 @@
+interface:
+  display_name: "设备连接"
+  short_description: "诊断移动或桌面设备配对；当前保留为禁用说明。"
+policy:
+  allow_implicit_invocation: false

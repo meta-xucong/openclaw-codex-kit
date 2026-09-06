@@ -10,8 +10,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -19,10 +21,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "installer-pack"
 PACK_ID = "codex-starter"
-PACK_VERSION = "1.0.0"
+PACK_VERSION = "1.1.0"
+MIN_CODEX_VERSION = "0.144.0"
+TESTED_CODEX_VERSION = os.environ.get("CODEX_TESTED_VERSION", "0.144.1")
 STATUSES = {"ready", "requires-runtime", "requires-mcp", "requires-credential", "unsupported/disabled"}
 TRANSIENT_NAMES = {".cache", ".git", ".codex", ".learnings", "drafts", "output", "__pycache__", "sessions", "memory", "logs", "createContent", "codex-data", "hooks", "node_modules", ".venv", "venv", ".ds_store", "thumbs.db", "desktop.ini"}
-TRANSIENT_SUFFIXES = {".lock", ".db", ".sqlite", ".sqlite3"}
+# Plain `.lock` files can be deliberate reproducibility contracts (for example the
+# Python requirements lock); cache/database locks are filtered explicitly below.
+TRANSIENT_SUFFIXES = {".db", ".sqlite", ".sqlite3"}
 
 
 def read_json(path: Path):
@@ -108,11 +114,11 @@ def component_dependency(raw: str, status: str, capabilities: list[str]) -> dict
     text = str(raw)
     required = status not in {"ready", "unsupported/disabled"}
     if text.startswith("python>="):
-        return {"type":"runtime","name":"Python","minVersion":text.split(">=",1)[1],"architecture":"x64","required":required,"offlineInstallerFilename":"python-3.x.x-amd64.exe","detection":"python --version or py -3 --version","silentArgs":"/quiet InstallAllUsers=0 PrependPath=1","restart":"recommended","license":"PSF License","source":"https://www.python.org/downloads/windows/","dependentCapabilities":capabilities}
+        return {"type":"runtime","name":"Python","minVersion":text.split(">=",1)[1],"architecture":"x64","required":required,"offlineInstallerFilename":"python-3.x.x-amd64.exe","detection":"python --version or py -3 --version","silentArgs":"/quiet InstallAllUsers=0 PrependPath=0 Include_test=0","restart":"recommended","license":"PSF License","source":"https://www.python.org/downloads/windows/","dependentCapabilities":capabilities}
     if text in {"python>=3.10 optional", "Python 3.10+"}:
-        return {"type":"runtime","name":"Python","minVersion":"3.10","architecture":"x64","required":False,"offlineInstallerFilename":"python-3.x.x-amd64.exe","detection":"python --version or py -3 --version","silentArgs":"/quiet InstallAllUsers=0 PrependPath=1","restart":"recommended","license":"PSF License","source":"https://www.python.org/downloads/windows/","dependentCapabilities":capabilities}
+        return {"type":"runtime","name":"Python","minVersion":"3.10","architecture":"x64","required":False,"offlineInstallerFilename":"python-3.x.x-amd64.exe","detection":"python --version or py -3 --version","silentArgs":"/quiet InstallAllUsers=0 PrependPath=0 Include_test=0","restart":"recommended","license":"PSF License","source":"https://www.python.org/downloads/windows/","dependentCapabilities":capabilities}
     if text.startswith("python"):
-        return {"type":"runtime","name":"Python package runtime","minVersion":"3.10","architecture":"x64","required":required,"offlineInstallerFilename":"python-3.x.x-amd64.exe","detection":"python --version","silentArgs":"/quiet InstallAllUsers=0 PrependPath=1","restart":"recommended","license":"PSF License","source":"https://www.python.org/downloads/windows/","dependentCapabilities":capabilities}
+        return {"type":"runtime","name":"Python package runtime","minVersion":"3.10","architecture":"x64","required":required,"offlineInstallerFilename":"python-3.x.x-amd64.exe","detection":"python --version","silentArgs":"/quiet InstallAllUsers=0 PrependPath=0 Include_test=0","restart":"recommended","license":"PSF License","source":"https://www.python.org/downloads/windows/","dependentCapabilities":capabilities}
     if text in {"Windows PowerShell", "curl.exe or Invoke-RestMethod", "network"}:
         return {"type":"system","name":text,"minVersion":"Windows 10","architecture":"x64","required":required,"offlineInstallerFilename":None,"detection":"Get-Command curl.exe or Get-Command Invoke-RestMethod","silentArgs":None,"restart":"none","license":"Microsoft system component","source":"Windows 10/11","dependentCapabilities":capabilities}
     if text.endswith("-mcp") or text == "feishu-doc-mcp" or text.startswith("feishu-"):
@@ -125,40 +131,62 @@ def component_dependency(raw: str, status: str, capabilities: list[str]) -> dict
         return {"type":"service","name":text,"minVersion":None,"architecture":"any","required":required,"offlineInstallerFilename":None,"detection":"endpoint configured by user","silentArgs":None,"restart":"none","license":"service provider terms","source":"user supplied","dependentCapabilities":capabilities}
     if "[" in text or text in {"pandas", "numpy", "matplotlib", "akshare", "openpyxl", "python-docx", "python-pptx", "pypdf", "pdfplumber", "reportlab", "html2text"}:
         package = text.split("[", 1)[0]
-        return {"type":"python-package","name":package,"minVersion":"current supported release","architecture":"any","required":required,"offlineInstallerFilename":f"{package}-wheelhouse.zip","detection":f"python -c \"import {package.replace('-', '_')}\"","silentArgs":None,"restart":"none","license":"package license","source":"PyPI or approved offline wheelhouse","dependentCapabilities":capabilities}
+        return {"type":"python-package","name":package,"minVersion":"see runtime/wheelhouse-manifest.json","architecture":"any","required":required,"offlineInstallerFilename":f"{package}-wheelhouse.zip","detection":f"python -c \"import {package.replace('-', '_')}\"","silentArgs":None,"restart":"none","license":"package license","source":"PyPI or approved offline wheelhouse","dependentCapabilities":capabilities}
     return {"type":"dependency","name":text,"minVersion":None,"architecture":"any","required":required,"offlineInstallerFilename":None,"detection":"manual check","silentArgs":None,"restart":"none","license":"verify before use","source":"user supplied","dependentCapabilities":capabilities}
+
+
+def normalize_dependency(raw, item: dict) -> dict:
+    """Keep the audit's multidimensional dependency contract intact."""
+    if isinstance(raw, dict):
+        dependency = dict(raw)
+        dependency.setdefault("required", True)
+        dependency.setdefault("autoInstallable", False)
+        dependency.setdefault("dependentCapabilities", item.get("capabilities", []))
+        return dependency
+    return component_dependency(str(raw), item["status"], item.get("capabilities", []))
 
 
 def build_dependencies(audit: dict, agents: dict) -> dict:
     skills = []
+    catalog: dict[str, dict] = {}
     for item in audit["skills"]:
-        deps = [component_dependency(dep, item["status"], item.get("capabilities", [])) for dep in item.get("dependencies", [])]
+        deps = [normalize_dependency(dep, item) for dep in item.get("dependencies", [])]
+        for dependency in deps:
+            dependency_id = dependency.get("id") or dependency.get("name")
+            dependency["id"] = dependency_id
+            if dependency_id not in catalog:
+                catalog[dependency_id] = dict(dependency)
+                catalog[dependency_id]["dependentSkills"] = []
+            catalog[dependency_id]["required"] = bool(catalog[dependency_id].get("required")) or bool(dependency.get("required"))
+            if item["id"] not in catalog[dependency_id]["dependentSkills"]:
+                catalog[dependency_id]["dependentSkills"].append(item["id"])
         skills.append({
-            "id": item["id"],
-            "path": f"skills/{item['id']}",
-            "status": item["status"],
-            "defaultEnabled": bool(item.get("defaultEnabled", False)),
-            "dependencyTypes": sorted({dep["type"] for dep in deps}),
-            "dependencies": deps,
+            "id": item["id"], "path": f"skills/{item['id']}", "status": item["status"],
+            "afterRemediationStatus": item.get("afterRemediationStatus"),
+            "installByDefault": bool(item.get("installByDefault", item.get("defaultEnabled", False))),
+            "enableWhen": item.get("enableWhen", []),
+            "dependencyTypes": sorted({dep.get("kind", dep.get("type", "unknown")) for dep in deps}),
+            "dependencies": [dep.get("id") for dep in deps],
             "dependentCapabilities": item.get("capabilities", []),
-            "notes": item.get("notes", "")
+            "healthCheck": item.get("verification", {}).get("smoke", ""), "notes": item.get("notes", "")
         })
     agent_items = []
     for item in agents["agents"]:
-        deps = [{"type":"skill","name":skill,"minVersion":None,"architecture":"any","required":True,"offlineInstallerFilename":None,"detection":f"skills/{skill}/SKILL.md exists","silentArgs":None,"restart":"Codex reload","license":"package license","source":"this pack","dependentCapabilities":[item["description"]]} for skill in item.get("skills", [])]
+        required = item.get("requiredSkills", item.get("skills", []))
+        optional = item.get("optionalSkills", [])
+        deps = [{"id":f"skill.{skill}","kind":"skill","name":skill,"required":True,"autoInstallable":True,"healthCheck":f"skills/{skill}/SKILL.md exists","dependentCapabilities":[item["description"]]} for skill in required]
+        deps += [{"id":f"skill.{skill}","kind":"skill","name":skill,"required":False,"autoInstallable":True,"healthCheck":f"skills/{skill}/SKILL.md exists","dependentCapabilities":[item["description"]]} for skill in optional]
         agent_items.append({
-            "id": item["id"], "file": f"agents/{item['file']}", "name": item["name"],
-            "description": item["description"], "status": item["status"], "defaultEnabled": True,
+            "id": item["id"], "file": f"agents/{item['file']}", "name": item["name"], "description": item["description"],
+            "status": item.get("status"), "readiness": item.get("readiness", {}), "requiredSkills": required, "optionalSkills": optional,
+            "connectionDependencies": item.get("connectionDependencies", []), "runtimeDependencies": item.get("runtimeDependencies", []),
             "dependencyTypes": ["skill"], "dependencies": deps, "dependentCapabilities":[item["description"]]
         })
     system = [
         {"type":"system","name":"Windows 10/11","minVersion":"10","architecture":"x64","required":True,"offlineInstallerFilename":None,"detection":"Get-CimInstance Win32_OperatingSystem","silentArgs":None,"restart":"none","license":"Microsoft","source":"Windows","dependentCapabilities":["installer"]},
-        {"type":"runtime","name":"PowerShell","minVersion":"5.1","architecture":"x64","required":True,"offlineInstallerFilename":None,"detection":"$PSVersionTable.PSVersion","silentArgs":None,"restart":"none","license":"Microsoft","source":"Windows","dependentCapabilities":["installer"]},
-        {"type":"runtime","name":"Git","minVersion":"2.x","architecture":"x64","required":False,"offlineInstallerFilename":"Git-*-64-bit.exe","detection":"git --version","silentArgs":"/VERYSILENT /NORESTART","restart":"optional","license":"GPL-2.0","source":"https://git-scm.com/download/win","dependentCapabilities":["deployment"]},
-        {"type":"runtime","name":"Node.js","minVersion":"18","architecture":"x64","required":False,"offlineInstallerFilename":"node-v18+-x64.msi","detection":"node --version","silentArgs":"/qn /norestart","restart":"recommended","license":"Node.js license","source":"https://nodejs.org/en/download","dependentCapabilities":["future Node skills"]},
-        {"type":"system","name":"curl.exe","minVersion":"Windows 10","architecture":"x64","required":False,"offlineInstallerFilename":None,"detection":"Get-Command curl.exe","silentArgs":None,"restart":"none","license":"Microsoft","source":"Windows component","dependentCapabilities":["weather"]}
+        {"type":"runtime","name":"PowerShell","minVersion":"5.1","architecture":"x64","required":True,"offlineInstallerFilename":None,"detection":"$PSVersionTable.PSVersion","silentArgs":None,"restart":"none","license":"Microsoft","source":"Windows","dependentCapabilities":["installer"]}
     ]
-    return {"schemaVersion":1,"id":PACK_ID,"version":PACK_VERSION,"policy":"No secrets, caches, history, databases, drafts or user content.","system":system,"skills":skills,"agents":agent_items}
+    return {"schemaVersion":2,"id":PACK_ID,"version":PACK_VERSION,"policy":"No secrets, caches, history, databases, drafts or user content.","system":system,"dependencyCatalog":sorted(catalog.values(), key=lambda value: value["id"]),"skills":skills,"agents":agent_items}
 
 
 def validate_sources(skill_names: list[str], audit: dict, agents: dict) -> None:
@@ -179,6 +207,14 @@ def validate_sources(skill_names: list[str], audit: dict, agents: dict) -> None:
     if len(seen_names) != 50:
         raise SystemExit(f"Expected 50 unique skill names, got {len(seen_names)}")
     known = set(seen_names)
+    for item in audit["skills"]:
+        if item.get("afterRemediationStatus") not in {"core-ready", "auto-installable-runtime", "guided-config", "unsupported"}:
+            raise SystemExit(f"Missing afterRemediationStatus: {item['id']}")
+        if bool(item.get("installByDefault", False)) and item["afterRemediationStatus"] != "core-ready":
+            raise SystemExit(f"Non-core skill cannot be installed by default: {item['id']}")
+        for dependency in item.get("dependencies", []):
+            if not isinstance(dependency, dict) or not dependency.get("id") or not dependency.get("kind"):
+                raise SystemExit(f"Dependency must be a multidimensional object: {item['id']}")
     agent_names = set()
     for item in agents["agents"]:
         path = ROOT / "agents" / item["file"]
@@ -196,17 +232,20 @@ def validate_sources(skill_names: list[str], audit: dict, agents: dict) -> None:
             raise SystemExit(f"Duplicate agent name: {parsed['name']}")
         agent_names.add(parsed["name"])
         text = f"{parsed['description']}\n{parsed['developer_instructions']}"
+        declared = set(item.get("skills", [])) | set(item.get("requiredSkills", [])) | set(item.get("optionalSkills", []))
         for skill_id in re.findall(r"[a-z][a-z0-9]+(?:-[a-z0-9]+)+", text):
-            if skill_id in known and skill_id not in item.get("skills", []):
+            if skill_id in known and skill_id not in declared:
                 raise SystemExit(f"Agent dependency catalog incomplete: {item['file']} -> {skill_id}")
-        for skill_id in item.get("skills", []):
+        for skill_id in declared:
             if skill_id not in known:
                 raise SystemExit(f"Agent references missing skill: {item['file']} -> {skill_id}")
+        if set(item.get("requiredSkills", [])) & set(item.get("optionalSkills", [])):
+            raise SystemExit(f"Agent required/optional overlap: {item['file']}")
     forbidden_tokens = ["open" + "claw", "claw" + "dbot", "ran" + "claw"]
     forbidden = re.compile("|".join(re.escape(token) for token in forbidden_tokens), re.IGNORECASE)
     secret_like = re.compile(r"(?:sk-[A-Za-z0-9]{20,}|Bearer\\s+[A-Za-z0-9._-]{20,})")
-    text_suffixes = {".md", ".py", ".js", ".ts", ".json", ".toml", ".ps1", ".sh", ".txt"}
-    for path in [ROOT / "README.md", ROOT / "ENVIRONMENT-MCP-INVENTORY.md", ROOT / "agents", ROOT / "manifest", ROOT / "scripts", ROOT / "skills"]:
+    text_suffixes = {".md", ".py", ".js", ".ts", ".json", ".toml", ".ps1", ".sh", ".txt", ".yaml", ".yml", ".lock"}
+    for path in [ROOT / "README.md", ROOT / "ENVIRONMENT-MCP-INVENTORY.md", ROOT / "agents", ROOT / "manifest", ROOT / "scripts", ROOT / "skills", ROOT / "runtime", ROOT / "config-fragments"]:
         paths = [path] if path.is_file() else [candidate for candidate in path.rglob("*") if candidate.is_file()]
         for candidate in paths:
             if candidate.name.casefold().endswith("-market.json") or candidate.suffix.lower() not in text_suffixes or any(part in TRANSIENT_NAMES for part in candidate.parts):
@@ -220,6 +259,31 @@ def validate_sources(skill_names: list[str], audit: dict, agents: dict) -> None:
 
 def pack_files() -> list[Path]:
     return sorted(path for path in PACK.rglob("*") if path.is_file())
+
+
+def source_commit() -> str:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        commit = result.stdout.strip()
+        return commit or "uncommitted-source"
+    except (OSError, subprocess.CalledProcessError):
+        return "uncommitted-source"
+
+
+def checksum_lines() -> list[str]:
+    lines = []
+    for path in pack_files():
+        relative = path.relative_to(PACK).as_posix()
+        if relative == "checksums.sha256":
+            continue
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        lines.append(f"{digest} *{relative}")
+    return lines
 
 
 def build() -> dict:
@@ -240,6 +304,8 @@ def build() -> dict:
     (PACK / "agents").mkdir(parents=True)
     (PACK / "mcp").mkdir(parents=True)
     (PACK / "manifest").mkdir(parents=True)
+    (PACK / "runtime").mkdir(parents=True)
+    (PACK / "config-fragments").mkdir(parents=True)
     for agent in sorted((ROOT / "agents").glob("*.toml")):
         shutil.copy2(agent, PACK / "agents" / agent.name)
     for name in skill_names:
@@ -247,28 +313,72 @@ def build() -> dict:
         if not (source / "SKILL.md").is_file():
             raise SystemExit(f"Missing SKILL.md: {name}")
         safe_copy_tree(source, PACK / "skills" / name)
+    safe_copy_tree(ROOT / "runtime", PACK / "runtime")
+    safe_copy_tree(ROOT / "config-fragments", PACK / "config-fragments")
     for relative in ["README.md", "ENVIRONMENT-MCP-INVENTORY.md"]:
         shutil.copy2(ROOT / relative, PACK / relative)
-    for relative in ["imported-skills.txt", "agents.txt", "agent-catalog.md", "source-notes.md", "skill-audit.json", "agent-audit.json"]:
+    for relative in [
+        "imported-skills.txt", "agents.txt", "agent-catalog.md", "source-notes.md",
+        "skill-audit.json", "agent-audit.json", "runtime-artifacts.json",
+        "mcp-servers.json", "api-services.json", "connection-fields.json",
+        "feishu-mcp-research.md",
+    ]:
         shutil.copy2(ROOT / "manifest" / relative, PACK / "manifest" / relative)
-    write_json(PACK / "mcp" / "servers.json", read_json(ROOT / "manifest" / "mcp-inventory.json"))
+    write_json(PACK / "mcp" / "mcp-servers.json", read_json(ROOT / "manifest" / "mcp-servers.json"))
+    write_json(PACK / "mcp" / "api-services.json", read_json(ROOT / "manifest" / "api-services.json"))
+    write_json(PACK / "mcp" / "connection-fields.json", read_json(ROOT / "manifest" / "connection-fields.json"))
     (PACK / "mcp" / "README.md").write_text(
-        "# MCP templates\n\nThis directory contains inventory-only templates. Add real server configuration outside the pack.\n",
+        "# External connection inventory\n\n"
+        "`mcp-servers.json` describes MCP servers, while `api-services.json` describes direct HTTP/API services.\n"
+        "`connection-fields.json` is the guided-configuration form contract. Real credentials and generated\n"
+        "Codex configuration stay outside this public pack.\n",
         encoding="utf-8", newline="\n"
     )
     for template in (ROOT / "manifest").glob("*.template.*"):
         shutil.copy2(template, PACK / "mcp" / template.name)
-    default_skills = [item["id"] for item in audit["skills"] if item.get("defaultEnabled")]
+    default_skills = [item["id"] for item in audit["skills"] if item.get("installByDefault")]
     default_agents = [f"agents/{item['file']}" for item in agents["agents"]]
+    commit = source_commit()
     pack_manifest = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "id": PACK_ID,
         "version": PACK_VERSION,
-        "compatibleCodex": {"agentFormat":"TOML with name/description/developer_instructions", "skillRoot":"%USERPROFILE%\\.agents\\skills", "agentRoot":"%USERPROFILE%\\.codex\\agents", "windows":["10","11"]},
+        "sourceCommit": commit,
+        "sourceDate": "2026-09-07",
+        "compatibleCodex": {
+            "minCodexVersion": MIN_CODEX_VERSION,
+            "testedCodexVersion": TESTED_CODEX_VERSION,
+            "agentFormat":"TOML with name/description/developer_instructions",
+            "skillRoot":"%USERPROFILE%\\.agents\\skills",
+            "agentRoot":"%USERPROFILE%\\.codex\\agents",
+            "windows":["10","11"]
+        },
         "statuses": sorted(STATUSES),
         "defaultEnabled": {"skills": default_skills, "agents": default_agents},
-        "sourcePolicy": {"noSecrets":True,"noUserContent":True,"noRuntimeCache":True,"ownedFilesOnly":True},
-        "extensionContract": {"skill":"add manifest entry and skills/<id>/SKILL.md; rerun builder","agent":"add agents/<id>.toml and agent-audit entry; rerun builder","mcp":"add mcp inventory entry and a template; do not put secrets in pack"}
+        "sourcePolicy": {"noSecrets":True,"noUserContent":True,"noRuntimeCache":True,"ownedFilesOnly":True,"noGlobalAgentsMd":True},
+        "installOrder": [
+            "verify-package-hashes", "install-approved-runtimes", "install-default-skills",
+            "install-all-agents", "render-private-connections", "health-check", "reload-codex"
+        ],
+        "conflictStrategy": {
+            "ownedFilesOnly": True,
+            "skipUnlessOverwrite": True,
+            "neverDeleteUnowned": True,
+            "neverWriteGlobalAgentsMd": True
+        },
+        "extensionContract": {
+            "schemaVersion": 2,
+            "skill":"add manifest entry, skills/<id>/SKILL.md and optional skills/<id>/agents/openai.yaml; rerun builder",
+            "agent":"add agents/<id>.toml and a matching manifest/agent-audit.json closure; rerun builder",
+            "mcp":"add manifest/mcp-servers.json entry and a secret-free config-fragments template; keep credentials local",
+            "apiService":"add manifest/api-services.json and connection-fields.json entries; never commit keys",
+            "runtime":"add a pinned artifact record and an auditable offline manifest; do not bundle unverified binaries",
+            "configFragment":"add a secret-free template with enable/disable and health-check rules"
+        },
+        "runtimeArtifacts": "manifest/runtime-artifacts.json",
+        "mcpServers": "mcp/mcp-servers.json",
+        "apiServices": "mcp/api-services.json",
+        "connectionFields": "mcp/connection-fields.json"
     }
     write_json(PACK / "pack.json", pack_manifest)
     write_json(PACK / "dependencies.json", build_dependencies(audit, agents))
@@ -277,8 +387,9 @@ def build() -> dict:
         relative = path.relative_to(PACK).as_posix()
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         manifest.append({"path":relative,"sha256":digest,"bytes":path.stat().st_size,"owned":True})
-    write_json(PACK / "file-manifest.json", {"schemaVersion":1,"id":PACK_ID,"version":PACK_VERSION,"files":manifest})
-    return {"skills":len(skill_names),"agents":len(default_agents),"defaultSkills":len(default_skills),"files":len(manifest)}
+    write_json(PACK / "file-manifest.json", {"schemaVersion":2,"id":PACK_ID,"version":PACK_VERSION,"hashScope":"all pack files except file-manifest.json and checksums.sha256","files":manifest})
+    (PACK / "checksums.sha256").write_text("\n".join(checksum_lines()) + "\n", encoding="utf-8", newline="\n")
+    return {"skills":len(skill_names),"agents":len(default_agents),"defaultSkills":len(default_skills),"files":len(pack_files()),"sourceCommit":commit}
 
 
 def main() -> None:

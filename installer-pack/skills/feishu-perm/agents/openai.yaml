@@ -1,0 +1,9 @@
+interface:
+  display_name: "文件权限"
+  short_description: "通过已配置的云文档连接管理共享和协作者权限。"
+policy:
+  allow_implicit_invocation: false
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "feishu"

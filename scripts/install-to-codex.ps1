@@ -15,6 +15,7 @@ $PackRoot = (Resolve-Path -LiteralPath $PackRoot).Path
 $packFile = Join-Path $PackRoot 'pack.json'
 $dependencyFile = Join-Path $PackRoot 'dependencies.json'
 $fileManifest = Join-Path $PackRoot 'file-manifest.json'
+$checksumFile = Join-Path $PackRoot 'checksums.sha256'
 foreach ($requiredFile in @($packFile, $dependencyFile, $fileManifest)) {
     if (-not (Test-Path -LiteralPath $requiredFile -PathType Leaf)) {
         throw "Invalid capability pack: missing $requiredFile"
@@ -22,9 +23,19 @@ foreach ($requiredFile in @($packFile, $dependencyFile, $fileManifest)) {
 }
 
 $pack = Get-Content -LiteralPath $packFile -Raw | ConvertFrom-Json
+if ([int]$pack.schemaVersion -ne 2) { throw "Unsupported capability pack schema: $($pack.schemaVersion)" }
 $manifest = Get-Content -LiteralPath $fileManifest -Raw | ConvertFrom-Json
+function Resolve-PackOwnedFile([string]$RelativePath) {
+    if ([string]::IsNullOrWhiteSpace($RelativePath) -or [IO.Path]::IsPathRooted($RelativePath) -or $RelativePath -match '(^|[\\/])\.\.([\\/]|$)') {
+        throw "Unsafe pack path: $RelativePath"
+    }
+    $packRootFull = [IO.Path]::GetFullPath($PackRoot).TrimEnd('\') + '\'
+    $candidate = [IO.Path]::GetFullPath((Join-Path $PackRoot ($RelativePath -replace '/', '\')))
+    if (-not $candidate.StartsWith($packRootFull, [StringComparison]::OrdinalIgnoreCase)) { throw "Pack path escapes root: $RelativePath" }
+    return $candidate
+}
 foreach ($entry in $manifest.files) {
-    $source = Join-Path $PackRoot ($entry.path -replace '/', '\')
+    $source = Resolve-PackOwnedFile ([string]$entry.path)
     if (-not (Test-Path -LiteralPath $source -PathType Leaf)) {
         throw "Pack file missing: $($entry.path)"
     }
@@ -32,6 +43,19 @@ foreach ($entry in $manifest.files) {
     if ($hash -ne $entry.sha256.ToLowerInvariant()) {
         throw "Pack hash mismatch: $($entry.path)"
     }
+}
+if (-not (Test-Path -LiteralPath $checksumFile -PathType Leaf)) { throw 'Invalid capability pack: missing checksums.sha256' }
+$checksumPaths = [System.Collections.Generic.HashSet[string]]::new()
+foreach ($line in Get-Content -LiteralPath $checksumFile) {
+    if ([string]::IsNullOrWhiteSpace($line)) { continue }
+    $match = [regex]::Match($line, '^(?<hash>[0-9a-fA-F]{64}) \*(?<path>.+)$')
+    if (-not $match.Success) { throw "Invalid pack checksum line: $line" }
+    $relative = $match.Groups['path'].Value.Trim()
+    if (-not $checksumPaths.Add($relative)) { throw "Duplicate pack checksum path: $relative" }
+    $source = Resolve-PackOwnedFile $relative
+    if (-not (Test-Path -LiteralPath $source -PathType Leaf)) { throw "Checksum target missing: $relative" }
+    $hash = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($hash -ne $match.Groups['hash'].Value.ToLowerInvariant()) { throw "Pack checksum mismatch: $relative" }
 }
 
 $agentTarget = Join-Path $env:USERPROFILE '.codex\agents'
@@ -91,9 +115,10 @@ foreach ($skillName in $skillNames) {
 }
 
 $record = [ordered]@{
-    schemaVersion = 1
+    schemaVersion = 2
     packId = [string]$pack.id
     packVersion = [string]$pack.version
+    sourceCommit = [string]$pack.sourceCommit
     installedAtUtc = [DateTime]::UtcNow.ToString('o')
     agentRoot = $agentTarget
     skillRoot = $skillTarget

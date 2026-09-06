@@ -1,0 +1,5 @@
+interface:
+  display_name: "饮食规划"
+  short_description: "按目标和饮食偏好制定食谱、营养分析与购物清单。"
+policy:
+  allow_implicit_invocation: false

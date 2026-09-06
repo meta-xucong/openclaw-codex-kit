@@ -1,72 +1,97 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "codex-starter",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "hashScope": "all pack files except file-manifest.json and checksums.sha256",
   "files": [
     {
       "path": "agents/content.toml",
-      "sha256": "e219d76e9dc278f136cf2f276af896a896b695ba85803cc0443c2c99416d894c",
-      "bytes": 756,
+      "sha256": "b783ef948bb4d960590dc7c8e8a0287123df6f8674dbfb9ef54ec5fbb7455385",
+      "bytes": 948,
       "owned": true
     },
     {
       "path": "agents/general.toml",
-      "sha256": "8a40a4d5009d2b561f6f76dd675a0366cb7d3b9c5ed9e3efa2d8262e471b022c",
-      "bytes": 801,
+      "sha256": "b2d1266629efed3097191d428348f2c75a5f06d38cb4b36cb8e214d570db150d",
+      "bytes": 1050,
       "owned": true
     },
     {
       "path": "agents/growth.toml",
-      "sha256": "7c21cac7b11bc7fc629a334a8841a3ba3f29a56ec36bdd53a35c95d1b06b20d2",
-      "bytes": 776,
+      "sha256": "0e07e4d026e710d78d44ac6f33455122650f15a401837a34ce977bd99a50c7aa",
+      "bytes": 821,
       "owned": true
     },
     {
       "path": "agents/investment.toml",
-      "sha256": "eeb749259acac24465e2762deaa94f40811fccc64a5a2b29fd9cdc7e70929f75",
-      "bytes": 774,
+      "sha256": "62b4800ac1f7dbd1890821cfb602e5dc43637160da61fdc376c525cbe36bdb8e",
+      "bytes": 895,
       "owned": true
     },
     {
       "path": "agents/lifestyle.toml",
-      "sha256": "f17a0a877d657988aff19074e56889d19fbbd79dc10860086592fec58a8e34b2",
-      "bytes": 765,
+      "sha256": "cf9ecde755a5d855f7743bbd4d4a3e78718efe8f5e2e0ab1e40f8e621370913d",
+      "bytes": 805,
       "owned": true
     },
     {
       "path": "agents/office.toml",
-      "sha256": "d53415bd105fb43e2a1af47126578054164f8b3375d96c339a3de9454a7ee57f",
-      "bytes": 792,
+      "sha256": "911f62e9934c716204c492a8a935898ba1621f853f5a1b73ee0c04d47b3c5cb7",
+      "bytes": 910,
       "owned": true
     },
     {
       "path": "agents/research.toml",
-      "sha256": "7efa8857555427e938c23a785478f5fd64b3de8f3e556746c6f8bae1413643f6",
-      "bytes": 797,
+      "sha256": "04e8404d0d11e29e127014ea9207061cd388af41ae2b1d8ec0eb59b9999b6989",
+      "bytes": 941,
+      "owned": true
+    },
+    {
+      "path": "config-fragments/codex-skills-gating.template.toml",
+      "sha256": "453407b87f5ffa288791a6eaafba72e84cc1a363d2b319b2d878b079391e8665",
+      "bytes": 391,
+      "owned": true
+    },
+    {
+      "path": "config-fragments/connections.template.json",
+      "sha256": "046b1fb860ccebffb4c02f836ffe9db531dfd82d36bd5810426e30735d5f9887",
+      "bytes": 135,
+      "owned": true
+    },
+    {
+      "path": "config-fragments/feishu-official-stdio.template.toml",
+      "sha256": "df69f244b40b2b0e3686775c710860898053639e604b57af3e1c9968eebca5c1",
+      "bytes": 346,
+      "owned": true
+    },
+    {
+      "path": "config-fragments/README.md",
+      "sha256": "5a2cbae3b4fdcac2ef92ee58ecea08d1ea99259e6e12df071b36699ecfff5646",
+      "bytes": 675,
       "owned": true
     },
     {
       "path": "dependencies.json",
-      "sha256": "6f1f1ae2b821402383419087a1e84d60f1764dbed927c29e8a363f3ebb085b9a",
-      "bytes": 103887,
+      "sha256": "02918229549f5b79d9ef076ba0d3ebce28566772d6f589cc9d3f4105f5acfdc8",
+      "bytes": 79128,
       "owned": true
     },
     {
       "path": "ENVIRONMENT-MCP-INVENTORY.md",
-      "sha256": "161dfd0a1887b04cc534bc1bc0e4844ca0633bbc3a0b27c68e0c6b9b7be635dc",
-      "bytes": 4654,
+      "sha256": "0206b6af46b64008bfc4d6c8dca15730f87d2e7bf9b169417a57c30d90fb723f",
+      "bytes": 4640,
       "owned": true
     },
     {
       "path": "manifest/agent-audit.json",
-      "sha256": "ed44b55085c745af4f32e116e92b5876a741985dfe7ff7db0e4a2c223d83615d",
-      "bytes": 2560,
+      "sha256": "282f171e60e9c22c4a73f740ed093ec6c34f1b9649e88690d4ba3608447b7ea4",
+      "bytes": 7240,
       "owned": true
     },
     {
       "path": "manifest/agent-catalog.md",
-      "sha256": "668b29bd577337a2a2661dfa3f7dea2bd968d077fb7a37f7b66cf21291d5855e",
-      "bytes": 4699,
+      "sha256": "cb3849157b7c1c3779f077788dbe38d0e6a70f0ff2536ae2fb1c0a0106521808",
+      "bytes": 4730,
       "owned": true
     },
     {
@@ -76,21 +101,63 @@
       "owned": true
     },
     {
+      "path": "manifest/api-services.json",
+      "sha256": "d58952a101d4168b7917f74f749cd6308cc0c57191745637579732d0df81a29d",
+      "bytes": 2480,
+      "owned": true
+    },
+    {
+      "path": "manifest/connection-fields.json",
+      "sha256": "b65a5817173db4da0b0a540da19ba79c604c6f83a02f206148355084818ef9a6",
+      "bytes": 3099,
+      "owned": true
+    },
+    {
+      "path": "manifest/feishu-mcp-research.md",
+      "sha256": "03e7253c0b91fbb6242c9ebbab3370933c7a5f8208e257f7af00b412547bd964",
+      "bytes": 2800,
+      "owned": true
+    },
+    {
       "path": "manifest/imported-skills.txt",
       "sha256": "2ad5a87fdff7a669a9ee44dbfd5f0808c720157f7bce4c8fbecfa67976977b89",
       "bytes": 875,
       "owned": true
     },
     {
+      "path": "manifest/mcp-servers.json",
+      "sha256": "5407023fb516e4b5df4af4e45191eda15420179359007813703af683bee3b21f",
+      "bytes": 1549,
+      "owned": true
+    },
+    {
+      "path": "manifest/runtime-artifacts.json",
+      "sha256": "16b11466d004b5c3938f1fed936888b466d1e010c46bcb8b91869d1289f4db19",
+      "bytes": 6967,
+      "owned": true
+    },
+    {
       "path": "manifest/skill-audit.json",
-      "sha256": "8e33ea53234ac304e87e012e941e7e51f324bf385ac9ed2251e397ae78b114a3",
-      "bytes": 9786,
+      "sha256": "6f733d517177b6386f0c827dd7cb7ab601f337dd4d3397bbdf08a209b56048ca",
+      "bytes": 64101,
       "owned": true
     },
     {
       "path": "manifest/source-notes.md",
-      "sha256": "74ade1c27869dfdd22fb123c317bfc6b99817dd2724a1b9dd6cf03bb390a897f",
-      "bytes": 1069,
+      "sha256": "ce0620e775573ee5eced6e820a16bd79a438186ef3618192c6bdab8ce6043a58",
+      "bytes": 1385,
+      "owned": true
+    },
+    {
+      "path": "mcp/api-services.json",
+      "sha256": "2b6facfc33ef687af213c3095a652acd05af6d69b8134f4f2d897ed76fbf12e1",
+      "bytes": 2672,
+      "owned": true
+    },
+    {
+      "path": "mcp/connection-fields.json",
+      "sha256": "824e2a64c1e32a27f12ed5db1b4bae322a08205b1e22eb79b744dfeec2be04df",
+      "bytes": 4372,
       "owned": true
     },
     {
@@ -100,21 +167,21 @@
       "owned": true
     },
     {
-      "path": "mcp/feishu.template.json",
-      "sha256": "14c8f4404a997a9e11733996ad1f8e1d626f8fda243a63d02f12e2acbf106801",
-      "bytes": 271,
-      "owned": true
-    },
-    {
       "path": "mcp/image-2.template.env",
       "sha256": "ace3331d4c2ff951f8f606e0e3d667141c94cf0fbf5f5e1eb4b0861cfde3dd11",
       "bytes": 113,
       "owned": true
     },
     {
+      "path": "mcp/mcp-servers.json",
+      "sha256": "5796c5ab7c3a9a86d9eb4f64b3d4d525fa099ff60c6eb57cf48dbb50a2320940",
+      "bytes": 1733,
+      "owned": true
+    },
+    {
       "path": "mcp/README.md",
-      "sha256": "51dc17d7c9e61564acb4c63f079c27e47d8e4187a300fa3d22a8cb4a798dbec7",
-      "bytes": 115,
+      "sha256": "825aafb3c56e2d4754afcee6f2273441bbc7886553ef7db5ebe9014dfe92e845",
+      "bytes": 287,
       "owned": true
     },
     {
@@ -124,21 +191,27 @@
       "owned": true
     },
     {
-      "path": "mcp/servers.json",
-      "sha256": "9feace007015824b0660e63caa0a8d987933052823739b461001edd269981fc1",
-      "bytes": 3450,
-      "owned": true
-    },
-    {
       "path": "pack.json",
-      "sha256": "53299458b3a2afce1a41cff857d7fa5b32fbb3f5f47b673f57fff87a4c5df72c",
-      "bytes": 1650,
+      "sha256": "2dbfa478f6fb94a8b88060821bc8650978c9f12506e9e90139a9687a8319136f",
+      "bytes": 3002,
       "owned": true
     },
     {
       "path": "README.md",
-      "sha256": "a5131337be8b478df775e3a66f11b453b12f3155fe34ed4c3881618f087304a9",
-      "bytes": 3735,
+      "sha256": "e6e7b55ae6043531980ddc54ea0bb5bdf110ffb3a79e1b6dab94b54909c8a81b",
+      "bytes": 6083,
+      "owned": true
+    },
+    {
+      "path": "runtime/requirements-python-win-x64-py312.lock",
+      "sha256": "f59ed5cbeb79ece5f90a78d38de8ef48a606b45e430b93279dd5f5e2f19266a1",
+      "bytes": 369,
+      "owned": true
+    },
+    {
+      "path": "runtime/wheelhouse-manifest.json",
+      "sha256": "417794ece8350d97f8d52f3a42ed0490edd95e425f756e33b6565ffe53836cb3",
+      "bytes": 3153,
       "owned": true
     },
     {
@@ -148,9 +221,21 @@
       "owned": true
     },
     {
+      "path": "skills/canvas/agents/openai.yaml",
+      "sha256": "1f90ff58374fe822b51ef904f03cd8d3843054e9f611c1bc933a5f501181b32d",
+      "bytes": 181,
+      "owned": true
+    },
+    {
       "path": "skills/canvas/SKILL.md",
       "sha256": "c68c9d9453309c0deec4d941d86bcc5ea20dc89e0842ec6ae12ff0124f9f0d93",
       "bytes": 890,
+      "owned": true
+    },
+    {
+      "path": "skills/china-stock-analysis/agents/openai.yaml",
+      "sha256": "6e7546b6b0ae2bf2fec1bee1e30f2a34c8ca41fc4061f14d875834557ce88978",
+      "bytes": 164,
       "owned": true
     },
     {
@@ -232,6 +317,12 @@
       "owned": true
     },
     {
+      "path": "skills/daily-reflection/scripts/reflection.ps1",
+      "sha256": "fa0a36fed45e0e61d4050a5db66837d1cf64ce137a72f5352d776f40b8a26d56",
+      "bytes": 1893,
+      "owned": true
+    },
+    {
       "path": "skills/daily-reflection/scripts/reflection_db.py",
       "sha256": "a1c5070feb10e8c19d4d446a5494d32b3ddd4a9ccb6b62f85e7c616fe5312063",
       "bytes": 27681,
@@ -244,9 +335,21 @@
       "owned": true
     },
     {
+      "path": "skills/data-assistant/agents/openai.yaml",
+      "sha256": "fdc5c51c3b2a941c9a5aad60d1e8f2bc748aca0ca4cbda7c44ed60f020bd8b89",
+      "bytes": 171,
+      "owned": true
+    },
+    {
       "path": "skills/data-assistant/SKILL.md",
       "sha256": "c9bbb48f7fbfab7014af02ed68d87ca4e2d761750f43fc07d2adb113abb57b5b",
       "bytes": 2784,
+      "owned": true
+    },
+    {
+      "path": "skills/docx-butler/agents/openai.yaml",
+      "sha256": "8081d83372530837e551c17669934ba92122e7fa7019b6c860f7d838ebc26b01",
+      "bytes": 174,
       "owned": true
     },
     {
@@ -268,6 +371,12 @@
       "owned": true
     },
     {
+      "path": "skills/excel-xlsx/agents/openai.yaml",
+      "sha256": "3b0c4e243dc31109562f35ac09d96bca1bfe88a3f0eb8b09f2fb96d7041c9e02",
+      "bytes": 170,
+      "owned": true
+    },
+    {
       "path": "skills/excel-xlsx/memory-template.md",
       "sha256": "af310835f08ddde5198085622f17dd2ec61a93e955cbfc8a9be5a690e5745160",
       "bytes": 1973,
@@ -286,6 +395,12 @@
       "owned": true
     },
     {
+      "path": "skills/feishu-doc/agents/openai.yaml",
+      "sha256": "31f2c2adcb85d1fee680ae66172e70b016978909bb8950793a5c9011cbf44e57",
+      "bytes": 226,
+      "owned": true
+    },
+    {
       "path": "skills/feishu-doc/references/block-types.md",
       "sha256": "8ce3f1c44f285bbca4a9ce90334bf1895c93536e9f9a10873c675226291b191e",
       "bytes": 5540,
@@ -298,9 +413,21 @@
       "owned": true
     },
     {
+      "path": "skills/feishu-drive/agents/openai.yaml",
+      "sha256": "e154ec8ea0686d06fb0e17b9bdeeac012bcfda676d92012adddf6405a5528fde",
+      "bytes": 229,
+      "owned": true
+    },
+    {
       "path": "skills/feishu-drive/SKILL.md",
       "sha256": "f4530740948eb3ce6c1f0b08777be7a2710344947ae2860846a47a770b13fa63",
       "bytes": 2447,
+      "owned": true
+    },
+    {
+      "path": "skills/feishu-perm/agents/openai.yaml",
+      "sha256": "cdb48c5e3c7441dcc7b032624cd3e8004a2ebdaaffcf1abe00815ec9fa13b671",
+      "bytes": 238,
       "owned": true
     },
     {
@@ -310,9 +437,21 @@
       "owned": true
     },
     {
+      "path": "skills/feishu-wiki/agents/openai.yaml",
+      "sha256": "0ba550acfc76a37112b23f658d654973e3a878c6d8cd5817277d75327e5819c0",
+      "bytes": 241,
+      "owned": true
+    },
+    {
       "path": "skills/feishu-wiki/SKILL.md",
       "sha256": "660348b3f24b8f7f64acd417907d151977c2da815d388faba4ce3708d6dd564c",
       "bytes": 2543,
+      "owned": true
+    },
+    {
+      "path": "skills/fitness-coach/agents/openai.yaml",
+      "sha256": "2278fd3114d0c0c6dbef1a69531414ee67120501a7e18e67cae25a37a226cfe5",
+      "bytes": 172,
       "owned": true
     },
     {
@@ -331,6 +470,12 @@
       "path": "skills/fitness-coach/SKILL.md",
       "sha256": "a9a6bd126b1aa1d9b716819b147580cec92113e9b9f5f3addbcd5584f75ff7f8",
       "bytes": 11686,
+      "owned": true
+    },
+    {
+      "path": "skills/fund-portfolio/agents/openai.yaml",
+      "sha256": "6be31afe5daa99dbfb1f13f4b6ecdf3abad931b6c8c2fa23ff2ab4a6246bc722",
+      "bytes": 175,
       "owned": true
     },
     {
@@ -370,9 +515,21 @@
       "owned": true
     },
     {
+      "path": "skills/healthcheck/agents/openai.yaml",
+      "sha256": "1ca97956b9f76059f6358322a7e0d79a9cfd3f0070ea4c6b76e79e3393e909a5",
+      "bytes": 181,
+      "owned": true
+    },
+    {
       "path": "skills/healthcheck/SKILL.md",
       "sha256": "6c5ff40f2dc8cf7a447729b988dda97a77d85469f868f94138b5a5b514d913bb",
       "bytes": 884,
+      "owned": true
+    },
+    {
+      "path": "skills/image-2/agents/openai.yaml",
+      "sha256": "be430120e38f4e35a62fd7729184e87e598de795193426463c49f666bab0f378",
+      "bytes": 169,
       "owned": true
     },
     {
@@ -397,6 +554,12 @@
       "path": "skills/industry-analysis/SKILL.md",
       "sha256": "85ccb41819179ff24188b33af93ce9a816c8f4fcf9f5b8851b7f084d2e1173c6",
       "bytes": 4873,
+      "owned": true
+    },
+    {
+      "path": "skills/macro-research/agents/openai.yaml",
+      "sha256": "45c22f3f179c0e5fb544d15d0e8137a2085bc450616d9ebc6532bf39832c7554",
+      "bytes": 172,
       "owned": true
     },
     {
@@ -439,6 +602,12 @@
       "path": "skills/market-sizing-analysis/SKILL.md",
       "sha256": "b4479e02b3551a0a040f4a149c355f586c83df8c94114f24af125c68dc580087",
       "bytes": 13093,
+      "owned": true
+    },
+    {
+      "path": "skills/meal-planner/agents/openai.yaml",
+      "sha256": "b78d03ab599845da7bce12471e4d49dbbe60ae5bc85d9940a22a810757675841",
+      "bytes": 178,
       "owned": true
     },
     {
@@ -502,6 +671,12 @@
       "owned": true
     },
     {
+      "path": "skills/node-connect/agents/openai.yaml",
+      "sha256": "1c4ef78af444ec878951f33f059239d2814865b33bc630e11905270e4e36d35c",
+      "bytes": 175,
+      "owned": true
+    },
+    {
       "path": "skills/node-connect/SKILL.md",
       "sha256": "546eaf21fbadde7e1f4386285f91fbde6f8da08d77ea74c41e0ef1fd3351bb76",
       "bytes": 715,
@@ -520,9 +695,21 @@
       "owned": true
     },
     {
+      "path": "skills/pdf-processing-toolkit/agents/openai.yaml",
+      "sha256": "daf6ea3849e4c345a118158b86a15d8d2ba70e3f79bb75ce4b6f9b5d3665a4d5",
+      "bytes": 163,
+      "owned": true
+    },
+    {
       "path": "skills/pdf-processing-toolkit/SKILL.md",
       "sha256": "a101f16a86bcba6f11515919941d35c0ef3169934faac036185cabce5fd1e1f5",
       "bytes": 7379,
+      "owned": true
+    },
+    {
+      "path": "skills/powerpoint-pptx/agents/openai.yaml",
+      "sha256": "c1224f16276ada1fd118ff7235724e15e3c957442edb803ceaeacdebf2ca9176",
+      "bytes": 163,
       "owned": true
     },
     {
@@ -550,21 +737,27 @@
       "owned": true
     },
     {
-      "path": "skills/python-env-setup/scripts/check_python_env.py",
-      "sha256": "ada9000e4c4a5e33b922651a328d74f6fb7638c61eb18dbc8baf2cd1891438da",
-      "bytes": 2130,
+      "path": "skills/python-env-setup/scripts/check_python_env.ps1",
+      "sha256": "8dc918cafbbab9204b1ba5f7862565b747922ec6cdef32671e17d2f3df932bed",
+      "bytes": 1588,
       "owned": true
     },
     {
       "path": "skills/python-env-setup/SKILL.md",
-      "sha256": "25953bcb851ee4fc6da1976e8ce8910e5cb2c61a7c7132175e6a3f5151293667",
-      "bytes": 1037,
+      "sha256": "b54137229abb3f743d7f97af10ea5bb75932cfe6eef8ccf77bc383c0d67cb182",
+      "bytes": 1188,
       "owned": true
     },
     {
       "path": "skills/safe-disk-operations/SKILL.md",
       "sha256": "31fed6351fc30830dcbc14aeeb8f4b5680454a5f29b36699ef949fd971db319d",
       "bytes": 10143,
+      "owned": true
+    },
+    {
+      "path": "skills/seedance2-0-video-gen/agents/openai.yaml",
+      "sha256": "c017e4fffdda5d5d7e6c9e52f8b9c81ccf1f6885341f5c15122f14bbdf6f5fee",
+      "bytes": 184,
       "owned": true
     },
     {
@@ -604,21 +797,27 @@
       "owned": true
     },
     {
-      "path": "skills/skills-search/scripts/skills_search.py",
-      "sha256": "c278be3dda54d6e334e5fa6e9632bf2cff2f03da0233f8d50259a3f33e92c03c",
-      "bytes": 2870,
+      "path": "skills/skills-search/scripts/skills_search.ps1",
+      "sha256": "846b146b96ca16523a860b82ef8efaac2caf131b2e2e6402c3d69131c2f76341",
+      "bytes": 3352,
       "owned": true
     },
     {
       "path": "skills/skills-search/SKILL.md",
-      "sha256": "f7237249a70c3bc2ab310ba2dd8406748fb92b20ee7b580da15edfad60069dde",
-      "bytes": 1137,
+      "sha256": "d18b54f4677f7bb72c18cc925dea9450d85f7ae9231c8ca4015cb754dba8c5bb",
+      "bytes": 1451,
       "owned": true
     },
     {
       "path": "skills/traffic-hunter/SKILL.md",
       "sha256": "6341c06e43d88c4e695d4f2771899b213be8d5f44379492165487b182fc33da1",
       "bytes": 5417,
+      "owned": true
+    },
+    {
+      "path": "skills/travel-planner/agents/openai.yaml",
+      "sha256": "43fb9a27bc528e46731cbbedfccaae2e93afb21f317fce194e25a33a428ca353",
+      "bytes": 169,
       "owned": true
     },
     {
@@ -670,6 +869,12 @@
       "owned": true
     },
     {
+      "path": "skills/venture-analysis/agents/openai.yaml",
+      "sha256": "31829488e52c2291d6fc3913606af536e47ea954f1162ccc7ba705c14921b1a3",
+      "bytes": 181,
+      "owned": true
+    },
+    {
       "path": "skills/venture-analysis/scripts/business_evaluator.py",
       "sha256": "ae30862b622f52ea157f524c9550dcf0e5d70eab1f959682761a682becf1b0ea",
       "bytes": 13337,
@@ -712,6 +917,12 @@
       "owned": true
     },
     {
+      "path": "skills/wealth-allocation/agents/openai.yaml",
+      "sha256": "cf215695e7548bd6b6e6603f635e4d06de2debe94399b06dd24c784237a50492",
+      "bytes": 169,
+      "owned": true
+    },
+    {
       "path": "skills/wealth-allocation/scripts/asset_allocator.py",
       "sha256": "f8d139a4a627a8d1881188c041d9bfdf5ce7af55ce96bdca1a8d21d5f798b049",
       "bytes": 11670,
@@ -742,21 +953,21 @@
       "owned": true
     },
     {
-      "path": "skills/weather-forecast/scripts/weather_db.py",
-      "sha256": "a2ee152ae54cadd30fc71b1f36d82b30debe2536ff5fc8e64562bba6e7b572f3",
-      "bytes": 3703,
+      "path": "skills/weather-forecast/scripts/weather_db.ps1",
+      "sha256": "c4721ad0b145c3ba96b6ac27b6ee35dda5d0f5eeccb424d02b0228c998748312",
+      "bytes": 1741,
       "owned": true
     },
     {
       "path": "skills/weather-forecast/SKILL.md",
-      "sha256": "7648ffe6d763cada80799489ad59de3139a32d5f2643cf56e18059e54b5a19ef",
-      "bytes": 1000,
+      "sha256": "b2ecd169c5da3ad6a2bd4eabeb52cd6431210d37a4ad2562ed7832ea3478c2c0",
+      "bytes": 1224,
       "owned": true
     },
     {
       "path": "skills/web-content-fetcher/README.md",
-      "sha256": "7965cdbec71b2b30d35298c44e87da4315100024c2c2f34de39d61949dd4c783",
-      "bytes": 590,
+      "sha256": "f56f5aae9f2ec20db966048b4b52e5536b0582baa7fd66f04a5ab8fc316a20a7",
+      "bytes": 612,
       "owned": true
     },
     {
@@ -773,8 +984,14 @@
     },
     {
       "path": "skills/web-content-fetcher/SKILL.md",
-      "sha256": "caf2eca01f130e9a57488a270f9c884faf1fce53128ff569f7726ffc11aba27d",
-      "bytes": 1036,
+      "sha256": "dca64bb7aba09efe6393becf46155325ce6402b2c6899e2f98b5d01a5db9978e",
+      "bytes": 1294,
+      "owned": true
+    },
+    {
+      "path": "skills/web-search-extraction/agents/openai.yaml",
+      "sha256": "1f13fa230af2271dccfb4f655613553c3bbf4edd70985648a96ea7cd456a266c",
+      "bytes": 187,
       "owned": true
     },
     {
@@ -787,6 +1004,12 @@
       "path": "skills/web-search-extraction/SKILL.md",
       "sha256": "1d782ee0b36892e0c2748953681de94b6e7bd7b28aafcbd3e4c12dab16322184",
       "bytes": 2914,
+      "owned": true
+    },
+    {
+      "path": "skills/wechat-article-creator/agents/openai.yaml",
+      "sha256": "9f4d03bfe7667d2446b2911b2417fbe303173477afc83c7b4d5e43331cb8c30e",
+      "bytes": 172,
       "owned": true
     },
     {
@@ -811,6 +1034,12 @@
       "path": "skills/wechat-article-creator/SKILL.md",
       "sha256": "bd4ce13e9f78e3f41dd69638a95e838bf06221d9750d51f37163377c9a51002a",
       "bytes": 9271,
+      "owned": true
+    },
+    {
+      "path": "skills/word-docx/agents/openai.yaml",
+      "sha256": "296a529f8a6a39ce846ab6eb521eaaedc0ec551e1c86e7ba4031386d40f97c75",
+      "bytes": 156,
       "owned": true
     },
     {

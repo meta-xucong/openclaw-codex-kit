@@ -1,0 +1,5 @@
+interface:
+  display_name: "图像生成连接"
+  short_description: "调用已配置的图像服务生成或编辑图片。"
+policy:
+  allow_implicit_invocation: false

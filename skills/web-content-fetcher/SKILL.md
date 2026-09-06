@@ -8,6 +8,9 @@ description: 把指定网页提取为干净 Markdown，保留标题、链接、�
 给定一个 URL 后，优先使用当前 Codex 提供的网页读取能力；需要批处理或离线复用时，使用本目录
 的 `scripts/fetch.py`。脚本不读取本机平台配置，也不把 Cookie 或账号信息写入输出。
 
+Codex 原生网页读取是本技能的核心路径，不需要 Python。只有需要批处理、复杂 HTML 选择器或本地复用
+时才启用 Python 适配器；适配器缺失时必须明确降级，不得把“未抓到”写成“没有内容”。
+
 ## Python 脚本
 
 ```powershell

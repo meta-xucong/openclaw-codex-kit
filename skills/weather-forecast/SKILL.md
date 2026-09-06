@@ -11,9 +11,9 @@ description: 记录用户明确指定的默认城市，并通过公开天气服�
 ## 首次使用
 
 ```powershell
-python scripts/weather_db.py has_city
-python scripts/weather_db.py set_city "北京"
-python scripts/weather_db.py get_city
+powershell -ExecutionPolicy Bypass -File scripts/weather_db.ps1 has_city
+powershell -ExecutionPolicy Bypass -File scripts/weather_db.ps1 set_city "北京"
+powershell -ExecutionPolicy Bypass -File scripts/weather_db.ps1 get_city
 ```
 
 查询公开天气：
@@ -28,3 +28,5 @@ curl.exe "https://wttr.in/Beijing?format=3"
 
 默认数据文件位于当前工作区的 `codex-data/weather-forecast/`；可用 `WEATHER_DATA_DIR` 指定目录。
 不要把该目录中的个人偏好、缓存或运行结果提交到公开仓库。
+
+城市记忆脚本使用 Windows PowerShell 的 JSON 能力，不依赖 Python；天气查询本身仍需要网络。

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "kind": "mcp-servers-only",
+  "policy": "Only STDIO or Streamable HTTP MCP servers belong here. Direct HTTP APIs are in api-services.json.",
+  "servers": [
+    {
+      "id": "feishu",
+      "status": "guided-config",
+      "available": true,
+      "recommended": true,
+      "purpose": "飞书/Lark 文档、会话、日历和 OpenAPI 工具",
+      "implementation": {
+        "publisher": "Lark Technologies / larksuite",
+        "repository": "https://github.com/larksuite/lark-openapi-mcp",
+        "package": "@larksuiteoapi/lark-mcp@0.5.1",
+        "license": "MIT",
+        "runtime": "Node.js >=20",
+        "publishedArtifact": "npm package",
+        "release": "v0.5.1",
+        "beta": true
+      },
+      "transports": [
+        "stdio",
+        "streamable-http",
+        "sse"
+      ],
+      "configFragment": "config-fragments/feishu-official-stdio.template.toml",
+      "connectionFields": [
+        "feishu.app-id",
+        "feishu.app-secret",
+        "feishu.base-url",
+        "feishu.auth-mode"
+      ],
+      "healthCheck": {
+        "command": "codex mcp list",
+        "expected": "feishu is listed and a read-only document/tool probe succeeds",
+        "failure": "连接未健康时只显示配置步骤，不声称已经读写飞书"
+      },
+      "enableWhen": [
+        "runtime.node20-feishu-optional.healthy",
+        "feishu.app-id",
+        "feishu.app-secret",
+        "codex.mcp.feishu.healthy"
+      ],
+      "disableRule": "Set enabled=false or remove the generated [mcp_servers.feishu] block; do not delete unrelated MCP entries.",
+      "relatedSkills": [
+        "feishu-doc",
+        "feishu-drive",
+        "feishu-perm",
+        "feishu-wiki"
+      ]
+    }
+  ]
+}

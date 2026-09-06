@@ -1,0 +1,5 @@
+interface:
+  display_name: "基金组合"
+  short_description: "筛选基金、设计组合并制定定投与风险评估方案。"
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,5 @@
+interface:
+  display_name: "健身计划"
+  short_description: "按目标、场景和进度设计训练计划与动作建议。"
+policy:
+  allow_implicit_invocation: false

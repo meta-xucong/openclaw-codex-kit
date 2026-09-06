@@ -1,0 +1,8 @@
+# Guided configuration only. Replace placeholders in a private rendered file before enabling.
+[mcp_servers.feishu]
+enabled = false
+command = "npx"
+args = ["-y", "@larksuiteoapi/lark-mcp@0.5.1", "mcp", "-a", "__FEISHU_APP_ID__", "-s", "__FEISHU_APP_SECRET__"]
+startup_timeout_sec = 30
+tool_timeout_sec = 120
+default_tools_approval_mode = "prompt"

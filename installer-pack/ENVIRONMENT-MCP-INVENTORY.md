@@ -1,66 +1,88 @@
-# Environment and MCP inventory
+# Windows 环境、运行时与外部连接清单
 
-This inventory is deliberately auditable and contains no secret values. It describes what the package can
-use, what is optional, and what is intentionally not bundled. The supported baseline is Windows 10/11.
+这份清单是公开能力包的部署契约，不含任何密钥、Cookie、私有 URL、会话或用户数据。完整逐项状态见
+`manifest/skill-audit.json`；运行时制品细节见 `manifest/runtime-artifacts.json`。
 
-## Compatibility statuses
+## 最终状态分布
 
-- `ready`: prompt/workflow skill works without an extra local runtime; live information still needs an available source.
-- `requires-runtime`: needs a separately installed interpreter, CLI, or Python package.
-- `requires-mcp`: needs a separately configured MCP server.
-- `requires-credential`: needs a user-supplied endpoint/API key; the package never reads hidden config files.
-- `unsupported/disabled`: retained as an explanation only; no compatible automatic entry point is shipped.
+| 整改后状态 | 数量 | 默认安装 | 启用方式 |
+|---|---:|---:|---|
+| `core-ready` | 25 | 是 | 安装后可直接使用 |
+| `auto-installable-runtime` | 15 | 否 | 运行时安装器完成健康检查后启用 |
+| `guided-config` | 7 | 否 | 连接向导保存配置并通过健康检查后启用 |
+| `unsupported` | 3 | 否 | 保持禁用，给出替代路径 |
 
-## Windows baseline
+## Windows 基线
 
-| Component | Status | Detection | Offline installer/package | Used by |
-|---|---|---|---|---|
-| Windows 10/11 x64 | must-package | `Get-CimInstance Win32_OperatingSystem` | supplied by Microsoft, not bundled | all |
-| PowerShell 5.1+ | must-package | `$PSVersionTable.PSVersion` | supplied by Windows | installer and safe file operations |
-| Python 3.10+ | optional | `python --version` or `py -3 --version` | `python-3.x.x-amd64.exe` | data, document, media and local database skills |
-| Node.js 18+ | optional | `node --version` | `node-v18+-x64.msi` | only skills that add a Node workflow later |
-| Git | optional | `git --version` | `Git-*-64-bit.exe` | repository deployment and versioning |
-| curl.exe | optional Windows component | `Get-Command curl.exe` | Windows component | weather and simple HTTP checks |
-| Browser driver | unsupported by default | explicit user check | not bundled | no default skill |
-
-The installer does not download or silently install these components. Use the offline filename column as a
-packaging checklist, verify the publisher/license, then install with the organization's approved procedure.
-
-## Python packages
-
-| Package | Status | Minimum | Detection | Used by |
-|---|---|---:|---|---|
-| `pandas` | optional | current supported release | `python -c "import pandas"` | stock/fund/macro/venture/wealth/data |
-| `numpy` | optional | current supported release | `python -c "import numpy"` | analysis and finance |
-| `matplotlib` | optional | current supported release | `python -c "import matplotlib"` | charts and finance |
-| `akshare` | optional | current supported release | `python -c "import akshare"` | A 股 and funds |
-| `openpyxl` | optional | current supported release | `python -c "import openpyxl"` | Excel |
-| `python-docx` | optional | current supported release | `python -c "import docx"` | Word |
-| `python-pptx` | optional | current supported release | `python -c "import pptx"` | PowerPoint |
-| `pypdf` | optional | current supported release | `python -c "import pypdf"` | PDF |
-| `pdfplumber` | optional | current supported release | `python -c "import pdfplumber"` | PDF/table extraction |
-| `reportlab` | optional | current supported release | `python -c "import reportlab"` | PDF/document output |
-| `scrapling[fetchers]` | optional | current supported release | `python -c "import scrapling"` | web content fallback |
-| `html2text` | optional | current supported release | `python -c "import html2text"` | web content fallback |
-
-Exact versions are intentionally not frozen here because a clean offline deployment must supply and audit
-its own wheelhouse. `dependencies.json` records the package names and the need for a runtime.
-
-## MCP and credentials
-
-| Server / credential | Status | Configuration | Related capabilities |
+| 组件 | 是否主链必需 | 检测 | 说明 |
 |---|---|---|---|
-| Feishu MCP | 待配置 / `requires-mcp` | `manifest/feishu.template.json` | four Feishu skills |
-| DashScope web search | optional / `requires-credential` | `manifest/dashscope-web-search.template.env` | web search extraction |
-| Image service endpoint | optional / `requires-credential` | `manifest/image-2.template.env` | image generation/edit |
-| Video service endpoint | optional / `requires-credential` | `manifest/seedance.template.env` | video generation |
-| API keys, tokens, cookies, private URLs | never package | local environment or secret manager only | external services |
+| Windows 10/11 x64 | 是 | `Get-CimInstance Win32_OperatingSystem` | 安装目标环境 |
+| PowerShell 5.1+ | 是 | `$PSVersionTable.PSVersion` | 安装器和原生降级脚本 |
+| CPython 3.12.10 x64 | 按 Skill 需要 | `python --version` 或 `py -3 --version` | per-user，默认不改系统 PATH |
+| Python wheelhouse | 按 Skill 需要 | 导入检查和逐文件 SHA-256 | 完整传递依赖由后续介质安装器物化 |
+| Node.js 20.x | 仅 Feishu 可选 | `node --version; npm --version` | 不属于主安装链 |
+| Git | 不属于运行时 | `git --version` | 仅用于仓库协作，不是能力包前置条件 |
 
-No MCP server executable, private config, token, session history, memory database, cache, draft or generated
-artifact is part of the public package. Health checks are described in `manifest/mcp-inventory.json`.
+Python 选择普通 per-user CPython，而不是 embeddable ZIP：数据、文档和 PDF 能力需要正常的 SSL、pip、
+venv 和包导入布局；安装根为 `%LocalAppData%\Programs\Python\Python312`，使用
+`/quiet InstallAllUsers=0 PrependPath=0 Include_test=0`，避免 USB 盘符变化和全局 PATH 污染。
 
-## Network policy
+## 离线 Python 依赖
 
-Network is optional for prompt-only work. Live search, weather, market data, document fetching and external
-generation need network access and should state the source/date. Offline mode must fail clearly rather than
-silently returning stale data.
+直接锁定的包在 `runtime/requirements-python-win-x64-py312.lock`；对应 direct wheel 文件名、版本、大小和
+哈希在 `runtime/wheelhouse-manifest.json`。清单不等于完整 wheelhouse：制作介质时必须生成完整传递闭包，
+然后用 `pip --require-hashes --no-index --find-links` 安装并把每个文件的哈希写入安装记录。
+
+| 直接包 | 锁定版本 | 主要用途 |
+|---|---:|---|
+| akshare | 1.18.94 | A 股和基金数据 |
+| pandas | 3.0.5 | 表格和数据分析 |
+| numpy | 2.5.2 | 数值分析 |
+| matplotlib | 3.11.1 | 图表 |
+| openpyxl | 3.1.5 | Excel |
+| python-docx | 1.2.0 | Word |
+| python-pptx | 1.0.2 | PowerPoint |
+| pypdf | 6.17.0 | PDF |
+| pdfplumber | 0.11.10 | PDF/表格提取 |
+| reportlab | 5.0.1 | 文档/PDF 输出 |
+| Pillow | 12.3.0 | 图像处理 |
+| scrapling | 0.4.15 | 网页正文回退 |
+| html2text | 2025.4.15 | HTML 转文本回退 |
+
+## MCP 与直连 API
+
+### MCP
+
+当前只登记一个实际 MCP 候选：`feishu`。它属于 `guided-config`，需要用户提供 App ID、App Secret、版本地址
+和认证方式，然后由向导渲染私有 `config.toml`，默认保持 `enabled=false`，通过 `codex mcp list` 和只读探针
+后才启用。官方实现使用 Node.js 20+；它不是包内的可执行文件。
+
+候选对比和选择理由见 `manifest/feishu-mcp-research.md`，配置字段见 `manifest/connection-fields.json`，
+无密钥模板见 `config-fragments/feishu-official-stdio.template.toml`。
+
+### 直连 API
+
+直连 HTTP 服务不伪装成 MCP：
+
+| 服务 | 用途 | 状态 | 必需连接字段 |
+|---|---|---|---|
+| `api.dashscope-web-search` | 网页搜索与正文提取 | guided-config | API Key、Base URL |
+| `api.image-2` | 图片生成/编辑 | guided-config | API Key、Base URL、模型 |
+| `api.seedance` | 视频生成/任务查询 | guided-config | API Key、Base URL、模型 |
+
+对应模板是 `manifest/dashscope-web-search.template.env`、`manifest/image-2.template.env` 和
+`manifest/seedance.template.env`；真实值只能存在于本机私有配置或密钥管理器。
+
+## 明确禁用的能力
+
+- `canvas`：没有可验证的远程画布运行时，只提供 HTML 原型说明或替代方案。
+- `healthcheck`：主机、管理员权限、网络暴露和备份状态必须现场审计，不能由静态包伪造。
+- `node-connect`：设备配对协议和节点后端不在当前 Codex 能力包边界内。
+
+## 启用规则
+
+1. `core-ready` Skill 在默认安装集合中。
+2. `auto-installable-runtime` 只有在指定 Python 和 wheelhouse 健康检查通过后才启用。
+3. `guided-config` 只有在连接字段校验、服务探针和权限确认通过后才启用。
+4. `unsupported` 始终保持禁用；Agent 必须给出安全降级，不得声称拥有该能力。
+5. 运行时、MCP 和 API 都有单独的健康检查与失败消息，互不混用。

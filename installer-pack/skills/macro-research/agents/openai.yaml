@@ -1,0 +1,5 @@
+interface:
+  display_name: "宏观研究"
+  short_description: "解读政策与经济周期，分析大类资产配置影响。"
+policy:
+  allow_implicit_invocation: false

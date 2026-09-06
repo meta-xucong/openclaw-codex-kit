@@ -13,9 +13,9 @@ description: 在当前 Codex 能力包或用户明确提供的本地目录中搜
 在技能目录中执行：
 
 ```powershell
-python scripts/skills_search.py "视频"
-python scripts/skills_search.py "图像生成" --json
-python scripts/skills_search.py "表格" --root "C:\path\to\installer-pack"
+powershell -ExecutionPolicy Bypass -File scripts/skills_search.ps1 -Keyword "视频"
+powershell -ExecutionPolicy Bypass -File scripts/skills_search.ps1 -Keyword "图像生成" -Json
+powershell -ExecutionPolicy Bypass -File scripts/skills_search.ps1 -Keyword "表格" -Root "C:\path\to\installer-pack"
 ```
 
 如果不传 `--root`，脚本会从自身位置向上查找 `manifest/imported-skills.txt`，再扫描对应的
@@ -26,3 +26,5 @@ python scripts/skills_search.py "表格" --root "C:\path\to\installer-pack"
 - 本技能只负责发现和解释，不代表某个技能已经安装或具备运行时。
 - 安装前应检查 `dependencies.json`、兼容性状态和许可证/来源说明。
 - 远程市场、私有仓库或企业内部目录需要用户明确提供地址并单独审查。
+- 本技能使用 PowerShell 和文件读取，不依赖 Python；在已安装目录中找不到总清单时，会退化为扫描邻近的
+  `SKILL.md` 并把状态标为 `unknown`。

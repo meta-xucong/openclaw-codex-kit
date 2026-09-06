@@ -1,0 +1,5 @@
+interface:
+  display_name: "旅行规划"
+  short_description: "按时间、预算、地点和偏好规划行程与清单。"
+policy:
+  allow_implicit_invocation: false

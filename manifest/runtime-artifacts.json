@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 2,
+  "policy": {
+    "starterKitContains": "metadata, lock files and verification instructions only",
+    "installerOwns": "download, signature verification, SHA-256 pinning, offline media and installation",
+    "pythonStrategy": {
+      "choice": "per-user-cpython",
+      "reason": "The full Python wheelhouse needs a normal CPython layout, SSL and venv support. A per-user install avoids administrator elevation and USB drive-letter fragility; the installer can still carry the official EXE and wheelhouse offline.",
+      "installRoot": "%LocalAppData%\\Programs\\Python\\Python312",
+      "usbPortableAlternative": "not selected for the main path; the embeddable ZIP lacks the normal pip/venv workflow and is less suitable for the package set"
+    }
+  },
+  "artifacts": [
+    {
+      "artifactId": "runtime.python312",
+      "purpose": "CPython runtime for local data, document, PDF, media and optional stateful Skills",
+      "relatedSkills": ["china-stock-analysis", "data-assistant", "docx-butler", "excel-xlsx", "fitness-coach", "fund-portfolio", "macro-research", "meal-planner", "pdf-processing-toolkit", "powerpoint-pptx", "travel-planner", "venture-analysis", "wealth-allocation", "wechat-article-creator", "word-docx", "image-2", "seedance2-0-video-gen", "web-search-extraction"],
+      "required": true,
+      "optional": false,
+      "detect": {"command": "python --version; py -3 --version", "expected": "Python 3.11 or newer; the locked offline build is 3.12.10"},
+      "source": {"url": "https://www.python.org/downloads/release/python-31210/", "productVersion": "3.12.10", "minimumVersion": "3.11", "recommendedLockedVersion": "3.12.10"},
+      "windows": {"architecture": "x64", "filename": "python-3.12.10-amd64.exe", "type": "per-user-exe", "estimatedSizeBytes": 26964224, "publisher": "Python Software Foundation", "license": "PSF License"},
+      "authenticode": {"required": true, "policy": "Valid Windows Authenticode chain and trusted Python Software Foundation publisher; record signer subject and timestamp in installer log."},
+      "sha256": {"required": true, "source": "Python release page and installer-side Get-FileHash -Algorithm SHA256", "recordIn": "installer runtime lock manifest"},
+      "install": {"silentArgs": "/quiet InstallAllUsers=0 PrependPath=0 Include_test=0", "acceptedReturnCodes": [0, 3010], "timeoutSeconds": 300, "restart": "none", "scope": "current-user", "path": "Do not edit system PATH; installer records absolute python.exe and can add a user PATH entry only after confirmation", "environment": {"CODEX_PYTHON": "%LocalAppData%\\Programs\\Python\\Python312\\python.exe"}},
+      "healthCheck": "& $env:CODEX_PYTHON --version; & $env:CODEX_PYTHON -c \"import sys; assert sys.version_info >= (3,11)\"",
+      "uninstallUpgrade": "Use Windows installed-app uninstall for the same per-user version; upgrade only after verifying a new runtime and wheelhouse against a new lock record. Never delete an unrelated Python installation."
+    },
+    {
+      "artifactId": "runtime.python312-wheelhouse",
+      "purpose": "Offline Python wheelhouse for the Skills that retain real Python functionality",
+      "relatedSkills": ["china-stock-analysis", "data-assistant", "docx-butler", "excel-xlsx", "fitness-coach", "fund-portfolio", "macro-research", "meal-planner", "pdf-processing-toolkit", "powerpoint-pptx", "travel-planner", "venture-analysis", "wealth-allocation", "wechat-article-creator", "word-docx", "web-content-fetcher", "image-2", "seedance2-0-video-gen", "web-search-extraction"],
+      "required": false,
+      "optional": true,
+      "detect": {"command": "python -c \"import openpyxl,docx,pptx,pypdf\"", "expected": "All packages required by the selected Skill group import successfully"},
+      "source": {"url": "https://pypi.org/", "productVersion": "see runtime/requirements-python-win-x64-py312.lock", "minimumVersion": "locked direct requirements", "recommendedLockedVersion": "the exact versions and direct wheel hashes in runtime/wheelhouse-manifest.json"},
+      "windows": {"architecture": "x64", "filename": "codex-python312-win-x64-wheelhouse.zip", "type": "offline-wheelhouse", "estimatedSizeBytes": 350000000, "publisher": "individual PyPI project maintainers", "license": "per-package licenses in the wheel metadata"},
+      "authenticode": {"required": false, "policy": "Wheels are not EXE installers; verify every wheel SHA-256 and PyPI provenance before placing them on the USB."},
+      "sha256": {"required": true, "source": "PyPI JSON file digests plus installer-side Get-FileHash", "recordIn": "runtime/wheelhouse-manifest.json and installer lock manifest"},
+      "install": {"silentArgs": "python -m pip install --no-index --find-links <wheelhouse> --require-hashes -r requirements-python-win-x64-py312.lock", "acceptedReturnCodes": [0], "timeoutSeconds": 600, "restart": "none", "scope": "current-user Python environment", "path": "No global PATH change", "environment": {"CODEX_PYTHON": "absolute path recorded by runtime installer"}},
+      "healthCheck": "python -c \"import openpyxl,docx,pptx,pypdf; print('wheelhouse-ok')\"",
+      "uninstallUpgrade": "Install into a new versioned per-user environment and switch the Codex runtime pointer only after health checks; keep the old environment for rollback."
+    },
+    {
+      "artifactId": "runtime.node20-feishu-optional",
+      "purpose": "Optional Node.js runtime for the official Feishu/Lark MCP package",
+      "relatedSkills": ["feishu-doc", "feishu-drive", "feishu-perm", "feishu-wiki"],
+      "required": false,
+      "optional": true,
+      "detect": {"command": "node --version; npm --version", "expected": "Node.js 20.x or newer with npm available"},
+      "source": {"url": "https://nodejs.org/en/download", "productVersion": "20.20.0", "minimumVersion": "20.0.0", "recommendedLockedVersion": "20.20.0 LTS line, re-verify before release"},
+      "windows": {"architecture": "x64", "filename": "node-v20.20.0-x64.msi", "type": "msi", "estimatedSizeBytes": 40000000, "publisher": "Node.js / OpenJS Foundation", "license": "Node.js license"},
+      "authenticode": {"required": true, "policy": "Valid Authenticode chain for the trusted Node.js/OpenJS release; record the signer subject in the installer lock."},
+      "sha256": {"required": true, "source": "Node.js release SHASUMS and installer-side Get-FileHash", "recordIn": "installer runtime lock manifest"},
+      "install": {"silentArgs": "/qn /norestart", "acceptedReturnCodes": [0, 3010], "timeoutSeconds": 300, "restart": "recommended", "scope": "current-user or approved machine scope", "path": "user PATH only after confirmation", "environment": {}},
+      "healthCheck": "node --version; npm --version; npx --yes @larksuiteoapi/lark-mcp --help",
+      "uninstallUpgrade": "Manage through Windows installed apps; only upgrade together with a tested Feishu MCP package version. This is not a main-chain dependency."
+    }
+  ]
+}

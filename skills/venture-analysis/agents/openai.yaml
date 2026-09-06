@@ -1,0 +1,5 @@
+interface:
+  display_name: "创业项目评估"
+  short_description: "评估商业计划、财务模型、估值和尽职调查风险。"
+policy:
+  allow_implicit_invocation: false
