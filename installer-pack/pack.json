@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "codex-starter",
+  "version": "1.0.0",
+  "compatibleCodex": {
+    "agentFormat": "TOML with name/description/developer_instructions",
+    "skillRoot": "%USERPROFILE%\\.agents\\skills",
+    "agentRoot": "%USERPROFILE%\\.codex\\agents",
+    "windows": [
+      "10",
+      "11"
+    ]
+  },
+  "statuses": [
+    "ready",
+    "requires-credential",
+    "requires-mcp",
+    "requires-runtime",
+    "unsupported/disabled"
+  ],
+  "defaultEnabled": {
+    "skills": [
+      "academic-research",
+      "competitor-intelligence",
+      "conversion-optimizer",
+      "efficiency-toolkit",
+      "email-expert",
+      "growth-analyst",
+      "image-prompt-generator",
+      "industry-analysis",
+      "market-sizing-analysis",
+      "meeting-secretary",
+      "multi-search-engine",
+      "offer-designer",
+      "painpoint-analyzer",
+      "safe-disk-operations",
+      "self-improvement-agent",
+      "traffic-hunter",
+      "user-research",
+      "video-prompt-generator",
+      "xiaohongshu-writing"
+    ],
+    "agents": [
+      "agents/general.toml",
+      "agents/research.toml",
+      "agents/content.toml",
+      "agents/investment.toml",
+      "agents/growth.toml",
+      "agents/lifestyle.toml",
+      "agents/office.toml"
+    ]
+  },
+  "sourcePolicy": {
+    "noSecrets": true,
+    "noUserContent": true,
+    "noRuntimeCache": true,
+    "ownedFilesOnly": true
+  },
+  "extensionContract": {
+    "skill": "add manifest entry and skills/<id>/SKILL.md; rerun builder",
+    "agent": "add agents/<id>.toml and agent-audit entry; rerun builder",
+    "mcp": "add mcp inventory entry and a template; do not put secrets in pack"
+  }
+}

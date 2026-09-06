@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "agents": [
+    {"id":"general","file":"general.toml","name":"全能官","description":"综合统筹与长期协作，覆盖跨领域分析、文件处理、计划制定和任务拆解。","skills":["web-search-extraction","multi-search-engine","data-assistant","docx-butler","excel-xlsx","word-docx","pdf-processing-toolkit","powerpoint-pptx","image-prompt-generator","video-prompt-generator"],"status":"requires-runtime"},
+    {"id":"research","file":"research.toml","name":"研究官","description":"深度研究与情报分析，覆盖学术、竞品、产业链、用户研究和市场测算。","skills":["academic-research","competitor-intelligence","industry-analysis","user-research","market-sizing-analysis","multi-search-engine","web-search-extraction"],"status":"requires-credential"},
+    {"id":"content","file":"content.toml","name":"创作官","description":"新媒体内容架构与创意生产，覆盖公众号、小红书、图片提示词和视频脚本。","skills":["wechat-article-creator","xiaohongshu-writing","image-prompt-generator","video-prompt-generator","web-search-extraction"],"status":"requires-credential"},
+    {"id":"investment","file":"investment.toml","name":"投资官","description":"投资研究与财富配置，覆盖 A 股、基金、宏观、创业投资和组合管理。","skills":["china-stock-analysis","fund-portfolio","macro-research","venture-analysis","wealth-allocation","web-search-extraction"],"status":"requires-runtime"},
+    {"id":"growth","file":"growth.toml","name":"增长官","description":"商业增长与变现设计，覆盖用户痛点、产品 Offer、流量、转化、留存和增长实验。","skills":["painpoint-analyzer","offer-designer","traffic-hunter","conversion-optimizer","growth-analyst","web-search-extraction"],"status":"requires-credential"},
+    {"id":"lifestyle","file":"lifestyle.toml","name":"生活官","description":"健康与生活方式规划，覆盖健身、饮食、旅行、天气和个人复盘。","skills":["fitness-coach","meal-planner","travel-planner","daily-reflection","weather-forecast","multi-search-engine","web-search-extraction"],"status":"requires-runtime"},
+    {"id":"office","file":"office.toml","name":"办公官","description":"职场效率与交付管家，覆盖文档、数据、邮件、会议和日常效率。","skills":["data-assistant","docx-butler","efficiency-toolkit","email-expert","meeting-secretary","excel-xlsx","word-docx","powerpoint-pptx","pdf-processing-toolkit"],"status":"requires-runtime"}
+  ]
+}

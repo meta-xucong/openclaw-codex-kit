@@ -6,8 +6,10 @@
 **/tokens/**
 **/sessions/**
 **/memory/**
+**/.learnings/**
 **/logs/**
 **/.cache/**
+**/__pycache__/**
 **/drafts/**
 **/output/**
 **/*_tasks.json

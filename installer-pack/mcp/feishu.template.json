@@ -1,0 +1,10 @@
+{
+  "serverId": "feishu",
+  "command": "<由用户提供的 MCP 启动命令>",
+  "args": [],
+  "env": {
+    "FEISHU_APP_ID": "<set outside this repository>",
+    "FEISHU_APP_SECRET": "<set outside this repository>",
+    "FEISHU_BASE_URL": "https://open.feishu.cn"
+  }
+}
