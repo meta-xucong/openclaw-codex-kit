@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "codex-starter",
   "version": "1.1.0",
-  "sourceCommit": "5f10b2ce29a319860434da5da4ba53dea0a1aa87",
+  "sourceCommit": "0b6497e2c6e58b205d3264a36e9abea1416ca07c",
   "sourceDate": "2026-09-07",
   "compatibleCodex": {
     "minCodexVersion": "0.144.0",
